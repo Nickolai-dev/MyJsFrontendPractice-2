@@ -14,20 +14,29 @@ const appTree = window.appTree = {
     title: 'Additional page',
   }
 };
-let appRoot = window.appRoot = document.getElementById('app');
+let appRoot = window.appRoot = {
+  app: document.getElementById('app'),
+  main: document.getElementById('main'),
+  header: document.getElementById('header'),
+  sidebar: document.getElementById('sidebar'),
+};
 let historyStateObject = {};
 let pageTitle = document.querySelector('title');
+let getAppLocation = function (urlpathname) {
+  let pageName = /[^/]+$/.exec(urlpathname)[0];
+  return appTree[pageName] ? pageName : 'homePage';
+}
 
 let asyncGoToPage = function(pageName, goBack = false) {
   if (!pageName) {
-    pageName = window.location.pathname.substr(1);
+    pageName = getAppLocation(window.location.pathname);
   }
   let page = appTree[pageName] || appTree.homePage;
   if (!goBack) {
     history.pushState(historyStateObject, page.title, '/' + pageName);
   }
   new Promise((resolve, reject) => {
-    appRoot.innerHTML = page.html;
+    appRoot.main.innerHTML = page.html;
     resolve();
   }).catch((reason) => {
     console.log(reason);
@@ -39,7 +48,8 @@ let asyncGoToPage = function(pageName, goBack = false) {
 
 let updatePagesLinksBinds = function() {
   let onPageLinkClick = function(ev) {
-    let pageName = $(ev.originalEvent.target).attr('href');
+    let location = new URL(ev.originalEvent.target.href);
+    let pageName = getAppLocation(location.pathname);
     asyncGoToPage(pageName);
   };
   $('.app-page').on('click', (ev) => {ev.preventDefault(); onPageLinkClick(ev);});
@@ -49,9 +59,10 @@ window.addEventListener('popstate', function (ev) {
   if(!ev.target.location.hostname in ['localhost']) {
     return;
   }
-  asyncGoToPage(ev.target.location.pathname.substr(1), true);
+  asyncGoToPage(getAppLocation(ev.target.location.pathname), true);
 });
 
 $(function () {
+  $('.no-js').hide();
   asyncGoToPage();
 });

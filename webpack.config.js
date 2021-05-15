@@ -31,7 +31,8 @@ module.exports = (env) => {
       new htmlWebpackPlugin({
         filename: 'index.html',
         template: path.resolve(__dirname, 'src/index.html'),
-        inject: true,
+        inject: "head",
+        scriptLoading: "defer"
       })
     ],
     module: {
