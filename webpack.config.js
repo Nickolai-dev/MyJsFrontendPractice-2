@@ -36,13 +36,31 @@ module.exports = (env) => {
       })
     ],
     module: {
-      rules: [
-        {
+      rules: [{
           test: /\.html$/,
+          include: [
+            path.resolve(__dirname, 'src')
+          ], exclude: [
+            path.resolve(__dirname, 'src/components')
+          ],
           use: [{
             loader: 'html-loader',
             options: {
-              esModule: false
+              esModule: false,
+            }
+          }]
+        }, {
+          test: /\.html$/,
+          include: [
+            path.resolve(__dirname, 'src/components')
+          ],
+          use: [{
+            loader: 'html-loader',
+            options: {
+              esModule: false,
+              minimize: {
+                collapseWhitespace: true
+              }
             }
           }]
         }, {
@@ -51,6 +69,14 @@ module.exports = (env) => {
           loader: 'file-loader',
           options: {
             name: 'img/[name]-[hash].[ext]',
+          }
+        }]
+      }, {
+        test: /font.*/,
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: 'fonts/[name].[ext]',
           }
         }]
       }, {
@@ -64,6 +90,7 @@ module.exports = (env) => {
           }, {
             loader: 'extract-loader',
             options: {
+              publicPath: '../'
             }
           }, 'css-loader', 'postcss-loader', 'sass-loader']
       }]
