@@ -94,6 +94,14 @@ module.exports = (env) => {
               publicPath: '../'
             }
           }, 'css-loader', 'postcss-loader', 'sass-loader']
+      }, {
+        test: /\.css$/,
+        include: [
+          path.resolve(__dirname, 'node_modules/ion-rangeslider/css')
+        ],
+        use: [
+          'raw-loader'
+        ]
       }]
     }
   };

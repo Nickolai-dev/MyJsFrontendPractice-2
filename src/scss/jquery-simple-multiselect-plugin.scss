@@ -1,0 +1,121 @@
+
+.my-custom-select {
+  position: relative;
+  $border: 1px solid $gray-1;
+  $border-active: 1px solid $material-blue;
+  $root: &;
+  @extend .w-100;
+  &_open {
+    #{$root}__container {
+      border-bottom-right-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+      border: $border-active;
+    }
+    #{$root}__drop {
+      border: $border-active;
+    }
+    #{$root}__container {
+      &::after {
+        transform: translateY(-50%);
+      }
+    }
+  }
+  &__container {
+    position: relative;
+    @extend .rounded;
+    border: $border;
+    min-height: $input-height;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 5px 5px 0 5px;
+    &::after {
+      $bwidth: 4px;
+      position: absolute;
+      content: '';
+      top: 50%;
+      right: 10px;
+      transform-origin: center;
+      transform: translateY(-50%) rotate(180deg);
+      border-bottom: $bwidth solid $gray-2;
+      border-right: $bwidth solid transparent;
+      border-left: $bwidth solid transparent;
+      border-top: 0;
+      font-size: 9px;
+    }
+  }
+  &__placeholder {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+  }
+  &__drop {
+    position: absolute;
+    z-index: $zindex-dropdown;
+    bottom: 0;
+    transform: translateY(100%);
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    border-top-style: none !important;
+    @extend .w-100;
+    padding: 5px;
+    background-color: $default;
+  }
+  &__scroll {
+    max-height: 240px;
+    overflow-y: scroll;
+  }
+  &__menu {
+    @extend .w-100;
+  }
+  &__option {
+    user-select: none;
+    padding: 0 10px;
+    @extend .border-0, .rounded-0;
+    height: $input-height;
+    @include hover-focus-active() {
+      background-color: $material-blue;
+      color: $default;
+    }
+    display: flex;
+    align-items: center;
+  }
+  &__search-container {
+    position: relative;
+    margin-bottom: 5px;
+    i {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px;
+      color: $gray-3;
+    }
+  }
+  &__search-input {
+    outline: none;
+    @extend .rounded, .w-100;
+    border: $border;
+    height: $input-height-sm;
+    padding: 5px 25px;
+    text-align: right;
+  }
+  &__badge {
+    user-select: none;
+    @extend .badge;
+    background-color: $gray-200;
+    display: inline-flex;
+    height: 18px;
+    font-size: 12px;
+    font-weight: 400;
+    margin: 0 5px 5px 0;
+    & > .close {
+      height: 0;
+      margin: auto;
+    }
+  }
+  &_multiple {
+
+  }
+}

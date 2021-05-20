@@ -205,6 +205,7 @@ let appSidebar = window.appSidebar = {query: require('../components/app-sidebar.
 }
 
 require('./basic-form-elements');
+require('./advanced-form-elements');
 
 let updateMainContentBinds = function () {
   let mainContent = $(appRoot.main);
@@ -212,6 +213,9 @@ let updateMainContentBinds = function () {
   $('.bf-checkbox', mainContent).bfCheckbox();
   $('.bf-radio', mainContent).bfRadio();
   $('.bf-file-upload', mainContent).bfFileUpload();
+  $('.af-knob-dial', mainContent).afKnobDial();
+  $('.af-ion-rangeslider', mainContent).afIonRangeSlider();
+  $('.af-jquery-select', mainContent).jquerySelect();
 }
 
 $(function () {
