@@ -20,6 +20,7 @@ module.exports = (env) => {
       fallback: {
         'fs': false,
         'path': false,
+        'getUrl': false
       }, alias: {
         'src': path.resolve(__dirname, 'src')
       }

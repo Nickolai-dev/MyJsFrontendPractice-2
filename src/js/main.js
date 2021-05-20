@@ -136,13 +136,14 @@ let asyncGoToPage = function(pageName, goBack = false) {
     console.log(reason);
   }).then((val) => {
     updatePagesLinksBinds();
+    updateMainContentBinds();
     pageTitle.innerHTML = page.title;
   });
 };
 
 let updatePagesLinksBinds = function(jq) {
   let onPageLinkClick = function(ev) {
-    let location = new URL(ev.originalEvent.target.href);
+    let location = new URL(ev.originalEvent.currentTarget.href);
     let pageName = getAppLocation(location.pathname);
     asyncGoToPage(pageName);
   };
@@ -201,6 +202,16 @@ let appSidebar = window.appSidebar = {query: require('../components/app-sidebar.
   }
   appRoot.sidebar.innerHTML = appSidebar.html;
   updatePagesLinksBinds($(appRoot.sidebar));
+}
+
+require('./basic-form-elements');
+
+let updateMainContentBinds = function () {
+  let mainContent = $(appRoot.main);
+  $('.social', mainContent).socialIcon();
+  $('.bf-checkbox', mainContent).bfCheckbox();
+  $('.bf-radio', mainContent).bfRadio();
+  $('.bf-file-upload', mainContent).bfFileUpload();
 }
 
 $(function () {

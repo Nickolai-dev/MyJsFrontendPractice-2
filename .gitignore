@@ -2,6 +2,5 @@
 node_modules/
 dist/
 src/img/
-.editorconfig
 package-lock.json
 .idea/
