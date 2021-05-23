@@ -208,26 +208,31 @@ require('./basic-form-elements');
 require('./advanced-form-elements');
 
 let updateMainContentBinds = function () {
-  let mainContent = $(appRoot.main), safeExec = function(callback) {
-    try {
-      callback();
-    } catch (e) {
-      console.log(e);
+  let mainContent = $(appRoot.main), safeExec = function(callbacks) {
+    for(let callback of callbacks) {
+      try {
+        callback();
+      } catch (e) {
+        console.log(e);
+      }
     }
   };
-  safeExec(() => $('.social', mainContent).socialIcon());
-  safeExec(() => $('.bf-checkbox', mainContent).bfCheckbox());
-  safeExec(() => $('.bf-radio', mainContent).bfRadio());
-  safeExec(() => $('.bf-file-upload', mainContent).bfFileUpload());
-  safeExec(() => $('.af-knob-dial', mainContent).afKnobDial());
-  safeExec(() => $('.af-ion-rangeslider', mainContent).afIonRangeSlider());
-  safeExec(() => $('.af-jquery-select', mainContent).jquerySelect({
-    optionsContentLoader: (url) => loadContent(url, (content) => JSON.parse(content).query)}));
-  safeExec(() => $('input[data-inputMask]').afInputMask());
-  safeExec(() => $('input.af-stripped-slider').strippedSlider());
-  safeExec(() => $('.af-date-picker').afDatePicker());
-  safeExec(() => $('.af-color-picker').afColorPicker());
-  safeExec(() => $('.af-touch-spin').afTouchSpin());
+  safeExec([
+    () => $('.social', mainContent).socialIcon(),
+    () => $('.bf-checkbox', mainContent).bfCheckbox(),
+    () => $('.bf-radio', mainContent).bfRadio(),
+    () => $('.bf-file-upload', mainContent).bfFileUpload(),
+    () => $('.af-knob-dial', mainContent).afKnobDial(),
+    () => $('.af-ion-rangeslider', mainContent).afIonRangeSlider(),
+    () => $('.af-jquery-select', mainContent).jquerySelect({
+      optionsContentLoader: (url) => loadContent(url, (content) => JSON.parse(content).query)}),
+    () => $('input[data-inputMask]').afInputMask(),
+    () => $('input.af-stripped-slider').strippedSlider(),
+    () => $('.af-date-picker').afDatePicker(),
+    () => $('.af-color-picker').afColorPicker(),
+    () => $('.af-touch-spin').afTouchSpin(),
+    () => $('.password-meter').afPasswordMeter(),
+  ]);
 }
 
 $(function () {

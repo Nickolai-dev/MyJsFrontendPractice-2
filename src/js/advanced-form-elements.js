@@ -256,6 +256,85 @@ let colpickStyles = require('jquery-colpick/css/colpick.css');
             arrs.on('mousedown', timerFunc);
             doc.on('mouseup.spinToWin', () => clearInterval(timer));
           });
+        }, afPasswordMeter: function () {
+          $(this).each(function (i, b) {
+            let block = $(b), onlyStrength = block.attr('data-onlyStrength') !== undefined,
+                assocUsername = block.attr('data-username'), assocDate = block.attr('data-date'), assocPassword = block.attr('data-password');
+            assocDate = assocDate === undefined ? undefined : $(assocDate);
+            assocUsername = assocUsername === undefined ? undefined : $(assocUsername);
+            assocPassword = assocPassword === undefined ? undefined : $(assocPassword);
+            if (block.find('.password-meter__progress').length === 0) {
+              block.append('<div class="password-meter__progress"></div>'); }
+            let progress = block.find('.password-meter__progress');
+            if (onlyStrength) {
+              block.addClass('password-meter_only-strength');
+            }
+            const regSpecialSumbols = /[\!\"\#\$\%\&\'\(\)\*\+,\-\./\\\:;\<\=\>\?\@\[\]\^_\`\{\|\}\~]/g,
+                  regNumbers = /\d/g;
+            let xIndex = function (str1, str2, variate = false) {
+              if (variate) {
+                for (let i = 0; i < str2.length; i++) {
+                  let reg = new RegExp(str2.substring(0, -2 + i) + '.?.?' + str2.substring(i, str2.length));
+                  if (str1.match(reg)) {
+                    return str2;
+                  }
+                }
+              } else {
+                return str1.match(str2) === null ? 0 : 1;
+              }
+            };
+            let calcStrength = function () {
+              let val = assocPassword.val(), name = assocUsername === undefined ? undefined : assocUsername.val(),
+                  date = assocDate === undefined ? undefined : assocDate.val(),
+                  specNum = val.match(regSpecialSumbols), numNum = val.match(regNumbers);
+              specNum = specNum === null ? 0 : specNum.length;
+              numNum = numNum === null ? 0 : numNum.length;
+              let strength = val.length / 20 * 100 +
+                (specNum > 0 ? specNum > 1 ? specNum > 2 ? 30 : 20 : 10 : 0) +
+                (numNum > 0 ? numNum > 1 ? 20 : 10 : 0);
+              if (date !== undefined) {
+                for (let i = 0, dp = date.split('/'); i < dp.length; i++) {
+                  strength -= xIndex(val, dp[i]) * 20;
+                }
+              }
+              if (name !== undefined) {
+                strength -= xIndex(val, name, false) * 50;
+              }
+              return strength;
+            };
+            let setState = function (state) {
+              let states = ['weak', 'normal', 'medium', 'strong', 'very-strong'];
+              for (let i = 0; i < states.length; i++) {
+                block.removeClass('password-meter_' + states[i]);
+              }
+              block.addClass('password-meter_' + state);
+            };
+            let updateVerdict = function () {
+              let strength = calcStrength(), val = strength >= 0 ? strength <= 100 ? strength : 100 : 0;
+              progress.css('width', val + '%');
+              if (strength <= 25) {
+                setState('very-weak');
+              } else if (strength < 35) {
+                setState('weak');
+              } else if (strength < 55) {
+                setState('normal');
+              } else if (strength < 80) {
+                setState('medium');
+              } else if (strength < 100) {
+                setState('strong')
+              } else if (strength >= 100) {
+                setState('very-strong');
+              }
+            };
+            updateVerdict();
+            assocPassword.on('keyup', (ev) => updateVerdict());
+            if (assocUsername !== undefined) {
+              assocUsername.on('change', (ev) => updateVerdict());
+            }
+            if (assocDate !== undefined) {
+              assocDate.on('change', (ev) => updateVerdict());
+            }
+          });
         }
       }
     }());
@@ -266,5 +345,6 @@ let colpickStyles = require('jquery-colpick/css/colpick.css');
       afDatePicker: afElements.afDatePicker,
       afColorPicker: afElements.afColorPicker,
       afTouchSpin: afElements.afTouchSpin,
+      afPasswordMeter: afElements.afPasswordMeter,
     });
 }));
