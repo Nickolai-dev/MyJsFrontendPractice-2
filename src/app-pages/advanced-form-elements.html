@@ -150,37 +150,66 @@
                data-label="Price range:" value="300" data-leftInputNode="#strippedSliderLabelledDouble_left" data-double="true"
                data-rightInputNode="#strippedSliderLabelledDouble_right" min="100" max="900" data-step="100" data-prefix="$">
         <input type="text" name="" id="strippedSliderLabelledDouble_right" class="af-stripped-slider" value="400"></div>
-      <div class="mb-3">{{ ac.stripped_slider('strippedSliderTooltip', skin='lightblue', min=1900, max=2100, enableTooltip=true, value=1950) }}</div>
-      <div class="mb-5">{{ ac.stripped_slider('strippedSliderDoubleTooltip', type='double', skin='green', min=1900, max=2100, enableTooltip=true, valueL=1970, valueR=2020) }}</div>
+      <div class="mb-3">
+        <input type="text" name="" id="strippedSliderTooltip" class="af-stripped-slider" data-skin="lightblue"
+               min="1900" max="2100" data-tooltip="true" value="1950" data-leftInputNode="#strippedSliderTooltip"></div>
+      <div class="mb-5">
+        <input type="text" name="" id="strippedSliderDoubleTooltip_left" class="af-stripped-slider" data-double="true"
+               data-skin="green" min="1900" max="2100" data-tooltip="true" value="1970"
+               data-leftInputNode="#strippedSliderDoubleTooltip_left" data-rightInputNode="#strippedSliderDoubleTooltip_right">
+        <input type="text" name="" id="strippedSliderDoubleTooltip_right" class="af-stripped-slider" value="2020"></div>
       <div class="row">
         <div class="col-lg-6">
           <div class="d-flex justify-content-center" style="height: 150px;">
-            <div class="mr-4">{{ ac.stripped_slider('strippedSliderVertical1', orientation='vertical', skin='lightblue', value=80) }}</div>
-            <div class="mr-4">{{ ac.stripped_slider('strippedSliderVertical2', orientation='vertical', skin='lightblue', value=60) }}</div>
-            <div class="mr-4">{{ ac.stripped_slider('strippedSliderVertical3', orientation='vertical', skin='lightblue', value=40) }}</div>
-            <div class="mr-4">{{ ac.stripped_slider('strippedSliderVertical4', orientation='vertical', skin='lightblue', value=60) }}</div>
-            <div class="mr-4">{{ ac.stripped_slider('strippedSliderVertical5', orientation='vertical', skin='lightblue', value=80) }}</div>
+            <div class="mr-4">
+              <input type="text" name="" id="strippedSliderVertical1" class="af-stripped-slider"
+                     data-orientation="vertical" data-skin="lightblue" value="80" data-leftInputNode="#strippedSliderVertical1"></div>
+            <div class="mr-4">
+              <input type="text" name="" id="strippedSliderVertical2" class="af-stripped-slider"
+                     data-orientation="vertical" data-skin="lightblue" value="60" data-leftInputNode="#strippedSliderVertical2"></div>
+            <div class="mr-4">
+              <input type="text" name="" id="strippedSliderVertical3" class="af-stripped-slider"
+                     data-orientation="vertical" data-skin="lightblue" value="40" data-leftInputNode="#strippedSliderVertical3"></div>
+            <div class="mr-4">
+              <input type="text" name="" id="strippedSliderVertical4" class="af-stripped-slider"
+                     data-orientation="vertical" data-skin="lightblue" value="60" data-leftInputNode="#strippedSliderVertical4"></div>
+            <div class="mr-4">
+              <input type="text" name="" id="strippedSliderVertical5" class="af-stripped-slider"
+                     data-orientation="vertical" data-skin="lightblue" value="80" data-leftInputNode="#strippedSliderVertical5"></div>
           </div>
         </div>
         <div class="col-lg-6">
           <div class="d-flex justify-content-center" style="height: 150px;">
-            <div class="mr-4">{{ ac.stripped_slider('strippedSliderVertical1', orientation='vertical', skin='purple', value=80) }}</div>
-            <div class="mr-4">{{ ac.stripped_slider('strippedSliderVertical2', orientation='vertical', skin='purple', value=60) }}</div>
-            <div class="mr-4">{{ ac.stripped_slider('strippedSliderVertical3', orientation='vertical', skin='purple', value=40) }}</div>
-            <div class="mr-4">{{ ac.stripped_slider('strippedSliderVertical4', orientation='vertical', skin='purple', value=60) }}</div>
-            <div class="mr-4">{{ ac.stripped_slider('strippedSliderVertical5', orientation='vertical', skin='purple', value=80) }}</div>
+            <div class="mr-4">
+              <input type="text" name="" id="strippedSliderVertical11" class="af-stripped-slider"
+                     data-orientation="vertical" data-skin="purple" value="80" data-leftInputNode="#strippedSliderVertical11"></div>
+            <div class="mr-4"><input type="text" name="" id="strippedSliderVertical22" class="af-stripped-slider"
+                     data-orientation="vertical" data-skin="purple" value="60" data-leftInputNode="#strippedSliderVertical22"></div>
+            <div class="mr-4"><input type="text" name="" id="strippedSliderVertical33" class="af-stripped-slider"
+                     data-orientation="vertical" data-skin="purple" value="40" data-leftInputNode="#strippedSliderVertical33"></div>
+            <div class="mr-4"><input type="text" name="" id="strippedSliderVertical44" class="af-stripped-slider"
+                     data-orientation="vertical" data-skin="purple" value="60" data-leftInputNode="#strippedSliderVertical44"></div>
+            <div class="mr-4"><input type="text" name="" id="strippedSliderVertical55" class="af-stripped-slider"
+                     data-orientation="vertical" data-skin="purple" value="80" data-leftInputNode="#strippedSliderVertical55"></div>
           </div>
         </div>
       </div>
       <div class="row pt-4">
         <div class="col-lg-4" style="height: 120px;">
-          {{ ac.stripped_slider('verticalRange', orientation='vertical', skin='green', type='double', labelled=true, label='Vertical Range:', prefix='$') }}
+          <input type="text" name="" id="verticalRange_bottom" class="af-stripped-slider" data-double="true"
+                 data-skin="green" data-orientation="vertical" data-label="Vertical Range:" data-prefix="$" value="30"
+                 data-leftInputNode="#verticalRange_bottom" data-rightInputNode="#verticalRange_top">
+          <input type="text" name="" id="verticalRange_top" class="af-stripped-slider" value="60"></div>
+        <div class="col-lg-4">
+          <div class="h-100">
+            <input type="text" name="" id="vertical" class="af-stripped-slider" data-skin="gray" value="80"
+                   data-label="Vertical:" data-orientation="vertical" data-leftInputNode="#vertical"></div>
         </div>
         <div class="col-lg-4">
-          <div class="h-100">{{ ac.stripped_slider('vertical', orientation='vertical', skin='gray', value=80, labelled=true, label='Vertical') }}</div>
-        </div>
-        <div class="col-lg-4">
-          <div class="h-100">{{ ac.stripped_slider('verticalTooltip', orientation='vertical', skin='orange', value=73, labelled=true, label='Vertical tooltip', enableTooltip=true) }}</div>
+          <div class="h-100">
+            <input type="text" name="" id="verticalTooltip" class="af-stripped-slider" data-orientation="vertical"
+                   data-skin="orange" value="73" data-label="Vertical Tooltip" data-tooltip="true"
+                   data-leftInputNode="#verticalTooltip"></div>
         </div>
       </div>
     </div>
@@ -190,22 +219,57 @@
   <div class="col-lg-6">
     <div class="sheet h-100">
       <h4 class="h4 font-weight-bold">Date picker</h4>
-      <div class="mb-3">{{ ac.date_picker('simpleDataPicker', label='Simple data input format') }}</div>
-      <div class="mb-3">{{ ac.date_picker('monthSelect', label='Month select', startView=1, endView=1   ) }}</div>
-      <div class="mb-3">{{ ac.date_picker('decade', label='Decade view', startView=2, endView=0) }}</div>
-      <div class="mb-3">{{ ac.date_picker('oneYear', label='One Year View', startView=1, endView=0) }}</div>
-      <div class="mb-3">{{ ac.date_picker('rangeSelect', label='Range select', range=true) }}</div>
+      <div class="mb-3">
+        <label for="simpleDatePicker">Simple date input format</label>
+        <div class="input-group af-date-picker" data-range="false" data-start-view="0" data-end-view="0">
+          <span class="input-group-prepend">
+            <span class="input-group-text bg-white rounded-0 border-lightgray"><i class="fa fa-calendar"></i></span></span>
+          <input id="simpleDatePicker" name="simpleDatePicker_from" type="text" class="basic-login-form__input basic-login-form__input_blue date-picker__input">
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="monthSelect">Month Select</label>
+        <div class="input-group af-date-picker" data-range="false" data-start-view="1" data-end-view="1">
+          <span class="input-group-prepend">
+            <span class="input-group-text bg-white rounded-0 border-lightgray"><i class="fa fa-calendar"></i></span></span>
+          <input id="monthSelect" name="monthSelect_from" type="text" class="basic-login-form__input basic-login-form__input_blue date-picker__input">
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="decade">Decade View</label>
+        <div class="input-group af-date-picker" data-range="false" data-start-view="2" data-end-view="0">
+          <span class="input-group-prepend">
+            <span class="input-group-text bg-white rounded-0 border-lightgray"><i class="fa fa-calendar"></i></span></span>
+          <input id="decade" name="decade_from" type="text" class="basic-login-form__input basic-login-form__input_blue date-picker__input">
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="oneYear">One Year View</label>
+        <div class="input-group af-date-picker" data-range="false" data-start-view="1" data-end-view="0">
+          <span class="input-group-prepend">
+            <span class="input-group-text bg-white rounded-0 border-lightgray"><i class="fa fa-calendar"></i></span></span>
+          <input id="oneYear" name="oneYear_from" type="text" class="basic-login-form__input basic-login-form__input_blue date-picker__input">
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="rangeSelect">Range Select</label>
+        <div class="input-group af-date-picker input-daterange" data-range="true" data-start-view="0" data-end-view="0">
+          <input id="rangeSelect" name="rangeSelect_from" type="text" class="basic-login-form__input basic-login-form__input_blue date-picker__input">
+          <span class="input-group-addon" style="background: #eeeeee;">to</span>
+          <input id="rangeSelect_to" name="rangeSelect_to" type="text" class="basic-login-form__input basic-login-form__input_blue date-picker__input">
+        </div>
+      </div>
     </div>
   </div>
   <div class="col-lg-6">
     <div class="sheet h-100">
       <h4 class="h4 font-weight-bold">Color Picker</h4>
       <label for="colorPicker">HEX</label>
-      <div class="mb-3"><input type="text" class="color-picker" id="colorPicker" name="colorPicker" data-type="hex" value="#2b64e0"></div>
+      <div class="mb-3"><input type="text" class="af-color-picker" id="colorPicker" name="colorPicker" data-type="hex" value="#2b64e0"></div>
       <label for="colorPicker">RGB</label>
-      <div class="mb-3"><input type="text" class="color-picker" id="colorPicker2" name="colorPicker2" data-type="rgb" value="rgba(26, 138, 73, 0.79)"></div>
+      <div class="mb-3"><input type="text" class="af-color-picker" id="colorPicker2" name="colorPicker2" data-type="rgb" value="rgba(26, 138, 73, 0.79)"></div>
       <label for="colorPicker">HSL</label>
-      <div class="mb-3"><input type="text" class="color-picker" id="colorPicker3" name="colorPicker3" data-type="hsb" value="hsb(359,89,77,79%)"></div>
+      <div class="mb-3"><input type="text" class="af-color-picker" id="colorPicker3" name="colorPicker3" data-type="hsb" value="hsb(359,89,77,79%)"></div>
     </div>
   </div>
   </div>
@@ -216,15 +280,15 @@
       <div class="row">
         <div class="col-lg-4">
           <label for="ts1">Basic example with empty value</label>
-          <input type="text" class="touch-spin" id="ts1">
+          <input type="text" class="af-touch-spin" id="ts1">
         </div>
         <div class="col-lg-4">
           <label for="ts2">Example with postfix</label>
-          <input type="text" class="touch-spin" id="ts2" min="0" max="100" step="0.10" data-postfix="%">
+          <input type="text" class="af-touch-spin" id="ts2" min="0" max="100" step="0.10" data-postfix="%">
         </div>
         <div class="col-lg-4">
           <label for="ts3">Example with postfix</label>
-          <input type="text" class="touch-spin" id="ts3" min="0" max="100" data-vertical="">
+          <input type="text" class="af-touch-spin" id="ts3" min="0" max="100" data-vertical="">
         </div>
       </div>
     </div>

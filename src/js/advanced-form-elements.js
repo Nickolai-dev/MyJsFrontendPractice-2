@@ -5,7 +5,10 @@ require('ion-rangeslider/js/ion.rangeSlider.min');
 require('./jquery.jquery-simple-multiselect-plugin');
 require('jquery-mask-plugin/dist/jquery.mask.min');
 require('./jquery.stripped-slider');
-let ionStyles = require("ion-rangeslider/css/ion.rangeSlider.min.css");
+require('bootstrap-datepicker/dist/js/bootstrap-datepicker.min');
+require('jquery-colpick/js/colpick');
+let ionStyles = require('ion-rangeslider/css/ion.rangeSlider.min.css');
+let colpickStyles = require('jquery-colpick/css/colpick.css');
 
 (function (factory) {
     if (typeof define === 'function' && define.amd) {
@@ -20,11 +23,11 @@ let ionStyles = require("ion-rangeslider/css/ion.rangeSlider.min.css");
     }
 }(function ($) {
     let afElements = (function () {
-      let importIonStyles = function () {
-        if(document.getElementById('ionStyles')) {
+      let importAnotherStyles = function () {
+        if(document.getElementById('anotherStyles')) {
           return;
         }
-        $('head').append('<style id="ionStyles">' + ionStyles.default.toString() + '</style>');
+        $('head').append('<style id="anotherStyles">' + ionStyles.default.toString() + ' ' + colpickStyles.default.toString() + '</style>');
       };
       let defaults = {};
       return {
@@ -38,7 +41,7 @@ let ionStyles = require("ion-rangeslider/css/ion.rangeSlider.min.css");
             nativeInput.knob({'change': function (v) {}});
           });
         }, afIonRangeSlider: function () {
-          importIonStyles();
+          importAnotherStyles();
           $(this).each(function(i, b) {
             let nativeInput = $(b);
             let opts = {};
@@ -89,6 +92,170 @@ let ionStyles = require("ion-rangeslider/css/ion.rangeSlider.min.css");
             inputMasks[mask].options.selectOnFocus = true;
             input.mask(inputMasks[mask].mask, inputMasks[mask].options);
           });
+        }, afDatePicker: function () {
+          $(this).each(function (i, b) {
+            let block = $(b), range = (block.attr('data-range') === 'true'), input = block.find('.date-picker__input'),
+                startView = parseInt(block.attr('data-start-view')), endView = parseInt(block.attr('data-end-view'));
+            block.addClass('date-picker');
+            if(!range) {
+              input.datepicker({
+                format: endView > 0 ? endView > 1 ? 'yy' : 'mm/yy' : 'dd/mm/yy',
+                startView: startView,
+                minViewMode: endView,
+                todayBtn: 'linked',
+                autoclose: true
+              });
+            } else {
+              block.datepicker({
+                format: 'dd/mm/yy',
+                todayBtn: 'linked',
+                autoclose: true
+              });
+            }
+          });
+        }, afColorPicker: function () {
+          $(this).each(function(i, b) {
+            let input = $(b), dataType = input.attr('data-type');
+            input.wrap('<div class="color-picker"><div class="input-group"></div></div>')
+              .addClass('color-picker__input').after(
+                '<div class="input-group-append">\n' +
+                  '<button class="color-picker__btn">\n' +
+                    '<span class="color-picker__preview"></span>\n' +
+                  '</button>\n' +
+                '</div>').attr('onClick', 'this.setSelectionRange(0, this.value.length); document.execCommand(\'copy\');');
+            let block = input.parents('.color-picker'), button = block.find('.color-picker__btn'),
+                preview = block.find('.color-picker__preview');
+            block.append('<i class="color-picker__copied-icon" style="display: none;"></i>');
+            let copiedIcon = block.find('.color-picker__copied-icon');
+            input.on('click', (ev)=>copiedIcon.fadeIn().delay(800).fadeOut());
+            let picker, doc = $(document), alphaBar, currentX, handle, percentValue;
+            let parseColor = function(str, change = false) {
+              let col = '#000000', match = str.match(/(?<hex>\#(?<hex_val>[0-9a-fA-F]{6})(?<hex_a>[0-9a-fA-F]{2})?)|(?<rgb>rgba?\ ?\((?<rgb_r>\d{1,3}),\ ?(?<rgb_g>\d{1,3}),\ ?(?<rgb_b>\d{1,3})(:?,\ ?(?<rgb_a>\d(:?\.\d\d?)?)?\))?)|(?<hsb>hsb\ ?\((?<hsb_h>\d{1,3}),\ ?(?<hsb_s>\d{1,3}),\ ?(?<hsb_b>\d{1,3})(:?,\ ?(?<hsb_a>\d{1,3})\%)?\))/);
+              if (match === null) {
+                return col;
+              }
+              let groups = match.groups;
+              if (groups.hex !== undefined) {
+                col = groups.hex_val;
+                if (change) {percentValue = Math.round(parseInt(groups.hex_a || 'ff', 16) / 255 * 100);}
+              } else if (groups.rgb !== undefined) {
+                col = {r: groups.rgb_r, g: groups.rgb_g, b: groups.rgb_b};
+                if (change) {percentValue = groups.rgb_a === undefined ? 100 : Math.round(groups.rgb_a * 100);}
+              } else if (groups.hsb !== undefined) {
+                col = {h: groups.hsb_h, s: groups.hsb_s, b: groups.hsb_b};
+                if (change) {percentValue = groups.hsb_a === undefined ? 100 : groups.hsb_a;}
+              }
+              return col;
+            };
+            let move = function(ev) {
+              let barWidth = alphaBar.innerWidth();
+              if (ev !== null) {
+                currentX = ev.pageX - alphaBar.offset().left;
+              } else {
+                parseColor(input.val(), true);
+                currentX = barWidth * percentValue / 100;
+              }
+              currentX = currentX > 0 ? currentX < barWidth ? Math.round(currentX / barWidth * 100) * barWidth / 100 : barWidth : 0;
+              percentValue = Math.round(currentX / barWidth * 100);
+              handle.css('left', currentX);
+              button.colpickSetColor(parseColor(input.val()));
+            };
+            let extendPicker = function() {
+              picker.css({
+                height: '185px'
+              }).append('<div class="colpick-alfa"><div class="colpick-alfa__handle"></div></div>')
+                .find('.colpick_new_color, .colpick_hex_field').hide();
+              alphaBar = picker.find('.colpick-alfa');
+              handle = alphaBar.find('.colpick-alfa__handle');
+              currentX = alphaBar.innerWidth();
+              alphaBar.on('mousedown', function(ev) {
+                ev.stopPropagation();
+                move(ev);
+                doc.on('mousemove.activeColorPickerAlphaBar', move)
+                  .on('mouseup.activeColorPickerAlphaBar',
+                    () => doc.off('mousemove.activeColorPickerAlphaBar mouseup.activeColorPickerAlphaBar'));
+              });
+            }
+            button.colpick({
+              submit: false,
+              layout: 'hex',
+              onChange: function(hsb, hex, rgb, el, setByColor) {
+                let val = 0, pcol = 'rgb' + (percentValue < 100 ? 'a' : '') + '(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + (percentValue < 100 ? ', ' + percentValue / 100 : '') + ')',
+                    pcolSolid = 'rgba(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ', 1)',
+                    pcolAlpha = 'rgba(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ', 0)';
+                switch (dataType) {
+                  case 'hex':
+                  case undefined:
+                    let al = Math.round(255 / 100 * percentValue).toString(16);
+                    val = '#' + hex + (percentValue < 100 ? (al.length < 2 ? al + '0' : al) : '');
+                    break;
+                  case 'rgb':
+                    val = pcol;
+                    break;
+                  case 'hsb':
+                    val = 'hsb(' + hsb.h + ', ' + hsb.s + ', ' + hsb.b + (percentValue < 100 ? ', ' + percentValue + '%' : '') + ')';
+                    break;
+                }
+                preview.css('background', 'linear-gradient(' + pcol + ', ' + pcol + '), ' + 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==)');
+                if (alphaBar !== undefined) { alphaBar.css({'background':
+                    'linear-gradient(90deg, ' + pcolAlpha + ', ' + pcolSolid + '), url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==)'});}
+                input.val(val);
+              },
+              onBeforeShow: function (b) {
+                picker = $(b);
+                if (picker.data('extended') === true) {
+                  return;
+                }
+                picker.data('extended', true);
+                extendPicker();
+                move(null);
+              }
+            }).colpickSetColor(parseColor(input.val(), true));
+          });
+        }, afTouchSpin: function () {
+          $(this).each(function(i, b) {
+            let input = $(b), block = input.wrap('<div class="touch-spin"><div class="input-group"></div></div>')
+                  .addClass('touch-spin__input').parents('.touch-spin'),
+                isVertical = input.attr('data-vertical') !== undefined, dataPostfix = input.attr('data-postfix'),
+                min = input.attr('min'), max = input.attr('max'), step = parseFloat(input.attr('step') || 1), doc = $(document),
+                delayForSpinBegin = 800, minDelayBetweenTicks = 25, maxDelayBetweenTicks = 150, ticksAcceleration = 10;
+            min = min === undefined ? undefined : parseInt(min);
+            max = max === undefined ? undefined : parseInt(max);
+            if (!isVertical) {
+              input.before('<button class="touch-spin__larr"></button>').after('<button class="touch-spin__rarr"></button>');
+            } else {
+              input.after('<div class="touch-spin__rblock"><a class="touch-spin__rarr"></a><a class="touch-spin__larr"></a></div>');
+            }
+            if (dataPostfix !== undefined) {
+              input.after('<span class="touch-spin__postfix">' + dataPostfix + '</span>');
+            }
+            let arrs = block.find('.touch-spin__larr, .touch-spin__rarr'), timer;
+            let get = function() {
+              return parseFloat(input.val()) || 0;
+            };
+            let set = function(v) {
+              let val = (min === undefined || v >= min) ? (max === undefined || v <= max) ? v : max : min,
+                  normalizedVal = Math.round(val / step) * step;
+              input.val(normalizedVal.toString().match(/\-?\d+(?:\.\d\d?)?/)[0]);
+              return val === v;
+            };
+            let inc = function(a) {
+              return set(get() + (a.is('.touch-spin__rarr') ? step : -step));
+            };
+            let timerFunc = function(ev, thisInc = undefined, delay = maxDelayBetweenTicks) {
+              let lasts = true;
+              if (thisInc === undefined) {
+                lasts = false;
+                thisInc = ()=>inc($(this));
+              }
+              if (thisInc()) {
+                delay = delay - ticksAcceleration < minDelayBetweenTicks ? minDelayBetweenTicks : delay - ticksAcceleration;
+                timer = setTimeout(() => timerFunc(ev, thisInc, delay), lasts ? delay : delayForSpinBegin);
+              }
+            };
+            arrs.on('mousedown', timerFunc);
+            doc.on('mouseup.spinToWin', () => clearInterval(timer));
+          });
         }
       }
     }());
@@ -96,5 +263,8 @@ let ionStyles = require("ion-rangeslider/css/ion.rangeSlider.min.css");
       afKnobDial: afElements.afKnobDial,
       afIonRangeSlider: afElements.afIonRangeSlider,
       afInputMask: afElements.afInputMask,
+      afDatePicker: afElements.afDatePicker,
+      afColorPicker: afElements.afColorPicker,
+      afTouchSpin: afElements.afTouchSpin,
     });
 }));

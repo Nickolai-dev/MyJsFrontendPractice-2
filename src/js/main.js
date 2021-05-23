@@ -1,6 +1,3 @@
-
-console.log('Hello world!');
-
 const $ = window.$ = DEV_ENV === 'production' ? require('jquery/dist/jquery.min'): require('jquery');
 require("bootstrap/js/src/util");
 require("bootstrap/js/src/dropdown");
@@ -211,17 +208,26 @@ require('./basic-form-elements');
 require('./advanced-form-elements');
 
 let updateMainContentBinds = function () {
-  let mainContent = $(appRoot.main);
-  $('.social', mainContent).socialIcon();
-  $('.bf-checkbox', mainContent).bfCheckbox();
-  $('.bf-radio', mainContent).bfRadio();
-  $('.bf-file-upload', mainContent).bfFileUpload();
-  $('.af-knob-dial', mainContent).afKnobDial();
-  $('.af-ion-rangeslider', mainContent).afIonRangeSlider();
-  $('.af-jquery-select', mainContent).jquerySelect({
-    optionsContentLoader: (url) => loadContent(url, (content) => JSON.parse(content).query)});
-  $('input[data-inputMask]').afInputMask();
-  $('input.af-stripped-slider').strippedSlider();
+  let mainContent = $(appRoot.main), safeExec = function(callback) {
+    try {
+      callback();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  safeExec(() => $('.social', mainContent).socialIcon());
+  safeExec(() => $('.bf-checkbox', mainContent).bfCheckbox());
+  safeExec(() => $('.bf-radio', mainContent).bfRadio());
+  safeExec(() => $('.bf-file-upload', mainContent).bfFileUpload());
+  safeExec(() => $('.af-knob-dial', mainContent).afKnobDial());
+  safeExec(() => $('.af-ion-rangeslider', mainContent).afIonRangeSlider());
+  safeExec(() => $('.af-jquery-select', mainContent).jquerySelect({
+    optionsContentLoader: (url) => loadContent(url, (content) => JSON.parse(content).query)}));
+  safeExec(() => $('input[data-inputMask]').afInputMask());
+  safeExec(() => $('input.af-stripped-slider').strippedSlider());
+  safeExec(() => $('.af-date-picker').afDatePicker());
+  safeExec(() => $('.af-color-picker').afColorPicker());
+  safeExec(() => $('.af-touch-spin').afTouchSpin());
 }
 
 $(function () {

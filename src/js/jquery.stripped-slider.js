@@ -25,9 +25,19 @@
             isDouble ? inputRight.addClass('stripped-slider__input-right') : $([]))
             .wrapAll('<div class="stripped-slider__head"></div>');
           let sliderHead = inputLeft.parent();
+          if(isDouble) { // modern problems require modern solutions
+            let lv = inputLeft.attr('value') || min, rv = inputRight.attr('value') || max;
+            inputLeft.attr('value', rv);
+            inputRight.attr('value', lv);
+            let c = $('<div></div>');
+            c.insertAfter(inputLeft);
+            inputLeft.insertAfter(inputRight);
+            inputRight.insertAfter(c);
+            c.remove();
+          }
           sliderHead.children().wrapAll('<div class="d-flex flex-wrap"></div>');
           if (dataLabel !== undefined && isDouble) {
-            inputLeft.after('<span class="stripped-slider__defis">-</span>');
+            inputRight.after('<span class="stripped-slider__defis">-</span>');
           }
           sliderHead.prepend('<label for="' + rootElem.attr('data-leftInputNode') + '" class="stripped-slider__label'
             + (dataLabel === undefined ? ' sr-only' : '') + '">' + (dataLabel || 'Slider bar') + '</label>');

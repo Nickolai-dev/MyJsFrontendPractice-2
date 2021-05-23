@@ -98,7 +98,8 @@ module.exports = (env) => {
       }, {
         test: /\.css$/,
         include: [
-          path.resolve(__dirname, 'node_modules/ion-rangeslider/css')
+          path.resolve(__dirname, 'node_modules/ion-rangeslider/css'),
+          path.resolve(__dirname, 'node_modules/jquery-colpick/css'),
         ],
         use: [
           'raw-loader'
