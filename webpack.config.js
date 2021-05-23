@@ -27,7 +27,8 @@ module.exports = (env) => {
     },
     plugins: [
       new webpack.DefinePlugin({
-        DEV_ENV: JSON.stringify(mode)
+        DEV_ENV: JSON.stringify(mode),
+        DEV_FAKE_SERVER: true,
       }),
       new htmlWebpackPlugin({
         filename: 'index.html',

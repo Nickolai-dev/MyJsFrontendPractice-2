@@ -81,7 +81,7 @@ const appTree = window.appTree = {
         title: 'Dual List Box',
         icon: 'fa-hand-paper-o',
         pathName: 'dual-list-box',
-        html: import('src/app-pages/dual-list-box.html'),
+        html: require('src/app-pages/dual-list-box.html'),
       }]
     },
   ],
@@ -202,7 +202,10 @@ let appSidebar = window.appSidebar = {query: require('../components/app-sidebar.
   }
   appRoot.sidebar.innerHTML = appSidebar.html;
   updatePagesLinksBinds($(appRoot.sidebar));
-}
+};
+
+let fakeDB = DEV_FAKE_SERVER ? require('./fakeDB') : undefined,
+  loadContent = DEV_FAKE_SERVER ? fakeDB.loadContent : function(url, parser=(content)=>content) {};
 
 require('./basic-form-elements');
 require('./advanced-form-elements');
@@ -215,7 +218,10 @@ let updateMainContentBinds = function () {
   $('.bf-file-upload', mainContent).bfFileUpload();
   $('.af-knob-dial', mainContent).afKnobDial();
   $('.af-ion-rangeslider', mainContent).afIonRangeSlider();
-  $('.af-jquery-select', mainContent).jquerySelect();
+  $('.af-jquery-select', mainContent).jquerySelect({
+    optionsContentLoader: (url) => loadContent(url, (content) => JSON.parse(content).query)});
+  $('input[data-inputMask]').afInputMask();
+  $('input.af-stripped-slider').strippedSlider();
 }
 
 $(function () {
