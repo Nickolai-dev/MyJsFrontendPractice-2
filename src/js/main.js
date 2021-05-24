@@ -114,7 +114,7 @@ let appRoot = window.appRoot = {
 let historyStateObject = {};
 let pageTitle = document.querySelector('title');
 let getAppLocation = function (urlpathname) {
-  let pageName = /[^/]+$/.exec(urlpathname)[0];
+  let reg = /[^/]+$/.exec(urlpathname), pageName = reg ? reg[0] : '';
   return appTree.find(pageName) ? pageName : 'homePage';
 }
 

@@ -1,6 +1,7 @@
 const path = require("path");
 const htmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 
 module.exports = (env) => {
@@ -35,7 +36,12 @@ module.exports = (env) => {
         template: path.resolve(__dirname, 'src/index.html'),
         inject: "head",
         scriptLoading: "defer"
-      })
+      }), new CopyWebpackPlugin({
+        patterns: [{
+          from: path.resolve(__dirname, '.htaccess'),
+          to: path.resolve(__dirname, 'dist')
+        }]
+      }),
     ],
     module: {
       rules: [{
