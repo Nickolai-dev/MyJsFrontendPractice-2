@@ -1,8 +1,9 @@
 const path = require("path");
+const fs = require('fs');
 const htmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-
+const dist_path = fs.existsSync('/var/www/') ? '/var/www/my-nodejs-project/' : path.resolve(__dirname, 'dist');
 
 module.exports = (env) => {
   const mode = 'development';
@@ -12,8 +13,8 @@ module.exports = (env) => {
       'app': './src/js/main.js'
     },
     output: {
-      filename: 'main.js',
-      path: path.resolve(__dirname, 'dist')
+      filename: '[name]-[contenthash].bundle.js',
+      path: dist_path,
     },
     cache: true,
     devtool: 'inline-source-map',
@@ -39,7 +40,7 @@ module.exports = (env) => {
       }), new CopyWebpackPlugin({
         patterns: [{
           from: path.resolve(__dirname, '.htaccess'),
-          to: path.resolve(__dirname, 'dist')
+          to: dist_path
         }]
       }),
     ],
@@ -73,10 +74,24 @@ module.exports = (env) => {
           }]
         }, {
         test: /\.(png|gif|svg|jpe?g)$/i,
+        exclude: [
+          path.resolve(__dirname, 'node_modules')
+        ],
         use: [{
           loader: 'file-loader',
           options: {
             name: 'img/[name]-[hash].[ext]',
+          }
+        }]
+      }, {
+        test: /\.(png|gif|svg|jpe?g)$/i,
+        include: [
+          path.resolve(__dirname, 'node_modules')
+        ],
+        use: [{
+          loader: 'url-loader',
+          options: {
+            limit: true // this option kinda cringe
           }
         }]
       }, {
@@ -93,7 +108,7 @@ module.exports = (env) => {
           {
             loader: 'file-loader',
             options: {
-              name: mode === 'development' ? 'css/[name].css' : 'css/[name]-[hash].css'
+              name: 'css/[name]-[md4:hash:hex:8].css'
             }
           }, {
             loader: 'extract-loader',
@@ -109,6 +124,26 @@ module.exports = (env) => {
         ],
         use: [
           'raw-loader'
+        ]
+      }, {
+        test: /\.css$/,
+        include: [
+          path.resolve(__dirname, 'node_modules/malihu-custom-scrollbar-plugin')
+        ], use: [
+          {
+            loader: 'css-loader',
+            options: {
+              esModule: false,
+              sourceMap: false
+            }
+          },
+          'postcss-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: false
+            }
+          }
         ]
       }]
     }

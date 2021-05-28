@@ -155,13 +155,49 @@ window.addEventListener('popstate', function (ev) {
   asyncGoToPage(getAppLocation(ev.target.location.pathname), true);
 });
 
-let appHeader = require('../header.html'), toggleInsertHeader = function () {
-  appRoot.header.innerHTML = appHeader;
+require('./basic-form-elements');
+require('./advanced-form-elements');
+require('./jquery.drag-drop-upload');
+require('./jquery.dual-list-box');
+require('malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min');
+
+$.fn.extend({
+  mScrollbar: function () {
+    $(this).each(function (i, b) {
+      /**
+       * block`s parent position css prop must be relative
+       */
+      let block = $(b), wrapper = block.wrap('<div class="w-100 h-100 position-static"></div>').parent();
+      wrapper.mCustomScrollbar({
+        autoHideScrollbar: true,
+        scrollbarPosition: 'outside',
+        scrollInertia: 500,
+        mouseWheel: {
+          scrollAmount: 90,
+        }
+      });
+      let mcsbScrollbar = wrapper.children('.mCSB_scrollTools'),
+          draggerContainer = mcsbScrollbar.find('.mCSB_draggerContainer'),
+          draggerRail = draggerContainer.find('.mCSB_draggerRail');
+      mcsbScrollbar.css('right', '0');
+      draggerContainer.append(draggerRail);
+      draggerContainer.css({
+        'height': 'calc(100% - 5px)',
+        'top': '2px'
+      })
+      draggerRail.css({'background-color': 'rgba(0, 0, 0, 0.3);'})
+    });
+  }
+});
+
+let appHeader = $(require('../header.html')), toggleInsertHeader = function () {
+  $(appRoot.header).empty().append(appHeader);
+  appHeader.find('#sidebarCollapse').on('click', (ev) => $(appRoot.sidebar).parent().toggleClass('sidebar-hide'));
 }
 let appSidebar = window.appSidebar = {query: require('../components/app-sidebar.html')}, createAppSidebar = function() {
   let query = $(appSidebar.query), block = $(query[0]), containerElem = block.find('ul'),
-      collapseProto = $(query[1]), itemProto = $(query[2]), accordionId = 'accordionMenu';
-  containerElem.attr('id', accordionId);
+      collapseProto = $(query[1]), itemProto = $(query[2]);
+  containerElem.attr('id', 'accordionMenu');
   for (let i = 0; i < appTree.sections.length; i++) {
     let section = appTree.sections[i];
     if(!section.notCollapse) {
@@ -173,7 +209,7 @@ let appSidebar = window.appSidebar = {query: require('../components/app-sidebar.
       collapseItem.find('.accordion-menu__name').text(section.title);
       collapseItem.find('.accordion-menu__icon > i').addClass(section.icon);
       collapseItem.find('.accordion-menu__container').attr(
-        {'data-parent': '#' + accordionId, 'id': collapseId, 'aria-labelledby': collapseId + '_heading'});
+        {'data-parent': '#accordionMenu', 'id': collapseId, 'aria-labelledby': collapseId + '_heading'});
       containerElem.append(collapseItem);
       for (let j = 0; j < section.contents.length; j++) {
         let page = section.contents[j];
@@ -192,20 +228,33 @@ let appSidebar = window.appSidebar = {query: require('../components/app-sidebar.
       containerElem.append(item);
     }
   }
-  appSidebar.html = block[0].outerHTML;
+  appSidebar.html = block.wrap('<div class="sidebar-container"></div>').parent();
 }, toggleInsertSidebar = function () {
   if (!appSidebar.html) {
-    createAppSidebar()
+    createAppSidebar();
   }
-  appRoot.sidebar.innerHTML = appSidebar.html;
-  updatePagesLinksBinds($(appRoot.sidebar));
+  let sidebar = $(appRoot.sidebar);
+  sidebar.empty().append(appSidebar.html);
+  appSidebar.html.children().mScrollbar();
+  updatePagesLinksBinds(sidebar);
 };
 
 let fakeDB = DEV_FAKE_SERVER ? require('./fakeDB') : undefined,
   loadContent = DEV_FAKE_SERVER ? fakeDB.loadContent : function(url, parser=(content)=>content) {};
 
-require('./basic-form-elements');
-require('./advanced-form-elements');
+let stylesRequire = [
+  require('malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css'),
+], importRequiredStyles = function() {
+  if(document.getElementById('stylesRequire')) {
+    return;
+  }
+  let stylesString = '';
+  for(let req of stylesRequire) {
+    stylesString += req.toString() + ' ';
+  }
+  $('head').append('<style id="stylesRequire">' + stylesString + '</style>');
+}
+
 
 let updateMainContentBinds = function () {
   let mainContent = $(appRoot.main), safeExec = function(callbacks) {
@@ -232,6 +281,9 @@ let updateMainContentBinds = function () {
     () => $('.af-color-picker').afColorPicker(),
     () => $('.af-touch-spin').afTouchSpin(),
     () => $('.password-meter').afPasswordMeter(),
+    () => $('#fileUpload, #fileUpload2').dragDropUpload(),
+    () => $('#dualListBoxExample').dualListBox(),
+    () => $(),
   ]);
 }
 
@@ -240,4 +292,5 @@ $(function () {
   asyncGoToPage();
   toggleInsertHeader();
   toggleInsertSidebar();
+  importRequiredStyles();
 });

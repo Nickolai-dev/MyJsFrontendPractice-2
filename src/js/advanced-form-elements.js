@@ -24,10 +24,10 @@ let colpickStyles = require('jquery-colpick/css/colpick.css');
 }(function ($) {
     let afElements = (function () {
       let importAnotherStyles = function () {
-        if(document.getElementById('anotherStyles')) {
+        if(document.getElementById('afStyles')) {
           return;
         }
-        $('head').append('<style id="anotherStyles">' + ionStyles.default.toString() + ' ' + colpickStyles.default.toString() + '</style>');
+        $('head').append('<style id="afStyles">' + ionStyles.default.toString() + ' ' + colpickStyles.default.toString() + '</style>');
       };
       let defaults = {};
       return {

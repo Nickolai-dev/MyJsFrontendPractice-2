@@ -279,8 +279,8 @@ $header-height: 50px;
 $fa-font-path: '~font-awesome/fonts';
 @import "node_modules/font-awesome/scss/font-awesome";
 @import "./jquery-simple-multiselect-plugin";
-//@import "src/my-custom-plugins/jquery.drag-drop-upload/scss/jquery.drag-drop-upload";
-//@import "src/my-custom-plugins/jquery.dual-list-box/scss/dual-list-box";
+@import "./drag-drop-upload";
+@import "./dual-list-box";
 //@import "tinymce/skins/content/default/content.min.css";
 //@import "tinymce/skins/ui/oxide/content.min.css";
 //@import "tinymce/skins/ui/oxide-dark/content.min.css";
@@ -742,33 +742,51 @@ label {
     font-weight: 700;
   }
 }
-.sidebar-holder {
+.sidebar-spacer {
   width: $sidebar-width;
   flex-shrink: 0;
+  transition: all 0.3s ease 0s;
   #sidebar {
     position: fixed;
     top: $header-height;
     width: $sidebar-width;
     z-index: $zindex-fixed;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.42), 0 0 10px 0 rgba(0, 0, 0, 0.12), 0 0 10px 0 rgba(0, 0, 0, 0.2);
-    background-color: white;
-    height: 100%;
+    height: calc(100% - #{$header-height});
+    transition: all 0.3s ease 0s;
   }
+  &.sidebar-hide {
+    width: 0;
+    #sidebar {
+      transform: translateX(-100%);
+      * {
+        box-shadow: none;
+      }
+    }
+  }
+}
+.sidebar-container {
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.42), 0 0 10px 0 rgba(0, 0, 0, 0.12), 0 0 10px 0 rgba(0, 0, 0, 0.2);
+  background-color: white;
+  height: 100%;
+  position: relative;
+  transition: all 0.3s ease 0s;
 }
 .accordion-menu {
   $root: &;
   width: 100%;
+  padding-top: 5px;
   &__ul {
 
   }
   &__collapse {
-
+    &:not(last-of-type) {
+      margin-bottom: 5px;
+    }
   }
   &__item-heading {
     position: relative;
     cursor: pointer;
     display: flex;
-    margin-top: 5px;
     padding: 0 15px;
     height: 49px;
     align-items: center;
