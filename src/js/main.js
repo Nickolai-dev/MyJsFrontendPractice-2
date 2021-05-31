@@ -118,6 +118,37 @@ let getAppLocation = function (urlpathname) {
   return appTree.find(pageName) ? pageName : 'homePage';
 }
 
+let safeExec = function(callbacks) {
+  for(let callback of callbacks) {
+    try {
+      callback();
+    } catch (e) {
+      console.log(e);
+    }
+  }
+}, lazyExec = function(callbacks) {
+  /**
+   * @param callbacks: [{callback: ()=>any, then: [()=>any, ...]},
+   *            **OR** callback: ()=>any, ...] OR ()=>any
+   */
+  for (let callback of typeof callbacks === 'function' ? [callbacks] : callbacks) {
+    let promise = new Promise((resolve, reject) => {
+      let val = typeof callback === 'function' ? callback() : callback.callback();
+      resolve(val);
+    }).catch(reason => {
+      console.log(reason);
+    });
+    if (typeof callback !== 'object') {
+      continue;
+    }
+    for (let then of callback.then) {
+      promise = promise.then(value => {
+        then();
+      });
+    }
+  }
+};
+
 let asyncGoToPage = function(pageName, goBack = false) {
   if (!pageName) {
     pageName = getAppLocation(window.location.pathname);
@@ -182,17 +213,26 @@ $.fn.extend({
       mcsbScrollbar.css('right', '0');
       draggerContainer.append(draggerRail);
       draggerContainer.css({
-        'height': 'calc(100% - 5px)',
-        'top': '2px'
+        // 'height': 'calc(100% - 5px)',
+        // 'top': '2px'
       })
       draggerRail.css({'background-color': 'rgba(0, 0, 0, 0.3);'})
     });
   }
 });
 
+require('./menu-material');
+
 let appHeader = $(require('../header.html')), toggleInsertHeader = function () {
   $(appRoot.header).empty().append(appHeader);
   appHeader.find('#sidebarCollapse').on('click', (ev) => $(appRoot.sidebar).parent().toggleClass('sidebar-hide'));
+  $('.menu-material', appHeader).menuMaterial();
+  lazyExec(() => $('#MessageBoxDropdown', appHeader).menuMaterialFillIn({
+    content: {
+      type: 'message',
+      data: () => loadContentCached('/api?database=messages', content => JSON.parse(content).query)
+    }
+  }));
 }
 let appSidebar = window.appSidebar = {query: require('../components/app-sidebar.html')}, createAppSidebar = function() {
   let query = $(appSidebar.query), block = $(query[0]), containerElem = block.find('ul'),
@@ -240,7 +280,15 @@ let appSidebar = window.appSidebar = {query: require('../components/app-sidebar.
 };
 
 let fakeDB = DEV_FAKE_SERVER ? require('./fakeDB') : undefined,
-  loadContent = DEV_FAKE_SERVER ? fakeDB.loadContent : function(url, parser=(content)=>content) {};
+    loadContent = DEV_FAKE_SERVER ? fakeDB.loadContent : function(url, parser=(content)=>content) {},
+    contentCache = {}, loadContentCached = function (url, parser=(content)=>content) {
+  if (contentCache[url]) {
+    return parser(contentCache[url]);
+  }
+  let contentNonParsed = loadContent(url, content => content);
+  contentCache[url] = contentNonParsed;
+  return parser(contentNonParsed);
+};
 
 let stylesRequire = [
   require('malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css'),
@@ -257,15 +305,7 @@ let stylesRequire = [
 
 
 let updateMainContentBinds = function () {
-  let mainContent = $(appRoot.main), safeExec = function(callbacks) {
-    for(let callback of callbacks) {
-      try {
-        callback();
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  };
+  let mainContent = $(appRoot.main);
   safeExec([
     () => $('.social', mainContent).socialIcon(),
     () => $('.bf-checkbox', mainContent).bfCheckbox(),
@@ -274,7 +314,7 @@ let updateMainContentBinds = function () {
     () => $('.af-knob-dial', mainContent).afKnobDial(),
     () => $('.af-ion-rangeslider', mainContent).afIonRangeSlider(),
     () => $('.af-jquery-select', mainContent).jquerySelect({
-      optionsContentLoader: (url) => loadContent(url, (content) => JSON.parse(content).query)}),
+      optionsContentLoader: (url) => loadContentCached(url, (content) => JSON.parse(content).query)}),
     () => $('input[data-inputMask]').afInputMask(),
     () => $('input.af-stripped-slider').strippedSlider(),
     () => $('.af-date-picker').afDatePicker(),

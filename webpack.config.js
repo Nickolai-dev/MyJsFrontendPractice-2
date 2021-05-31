@@ -41,6 +41,9 @@ module.exports = (env) => {
         patterns: [{
           from: path.resolve(__dirname, '.htaccess'),
           to: dist_path
+        }, {
+          from: path.resolve(__dirname, 'src/img/contact/'),
+          to: path.resolve(dist_path, 'img/contact/')
         }]
       }),
     ],
@@ -67,6 +70,7 @@ module.exports = (env) => {
             loader: 'html-loader',
             options: {
               esModule: false,
+              sources: false,
               minimize: {
                 collapseWhitespace: true
               }

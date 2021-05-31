@@ -119,6 +119,7 @@ $material-blue: #4db7d4;
 $material-border: #c7290d;
 $link-hover-active-color: $gray-1;
 $basic-input-border-color: $lightgray;
+$nav-link-active-color: $warning;
 $basic-input-border: 1px solid $basic-input-border-color;
 $basic-input-focus-border: 1px solid $material-red;
 $basic-input-focus-border-blue: 1px solid $material-blue;
@@ -397,6 +398,16 @@ label {
       font-size: 14px;
       padding: 20px;
       @extend .stretched-link;
+      background: none;
+      box-shadow: none;
+      border: none;
+      transition: all linear .1s 0s;
+      &:active {
+        color: $nav-link-active-color;
+      }
+      &::after {
+        border-color: transparent;
+      }
     }
   }
   .right-navbar {
@@ -427,6 +438,16 @@ label {
       font-size: 22px;
       text-decoration: none;
       @extend .stretched-link;
+      background: none;
+      box-shadow: none;
+      border: none;
+      transition: all linear .1s 0s;
+      &:active {
+        color: $nav-link-active-color;
+      }
+      &::after {
+        border-color: transparent;
+      }
     }
     &__user-name {
       font-size: 16px;
@@ -434,10 +455,7 @@ label {
     }
   }
 }
-.adjust-attached-modal {
-
-}
-.dropdown-menu-material {
+.menu-material {
   $root: &;
   cursor: default;
   position: relative;
@@ -446,7 +464,7 @@ label {
   border: none;
   width: 330px;
   padding: 5px 0;
-  box-shadow: 0px 2px 3px rgba(0,0,0,.175);
+  box-shadow: 0 2px 3px rgba(0,0,0,.175);
   &__wrapper {
     position: relative;
   }
@@ -458,8 +476,6 @@ label {
     overflow: hidden;
   }
   &__content {
-    position: absolute;
-    top: 0;
     padding: 20px 40px 20px 20px;
     display: flex;
     flex-direction: column;
@@ -484,9 +500,10 @@ label {
     border-bottom: 1px solid $material-border;
   }
   &__bottom-btn {
+    @extend .position-relative;
     border-top: 1px solid $material-border;
   }
-  &__dropdown-item {
+  &__item {
     height: 40px;
     padding: 10px 20px;
     color: $default;
@@ -526,9 +543,10 @@ label {
     width: 400px;
   }
 }
-.dropdown-message {
+.menu-material-media {
   cursor: pointer;
   color: $default;
+  @extend .media;
   &__media-img {
     width: 70px;
     height: 70px;
@@ -543,10 +561,8 @@ label {
     align-items: center;
     margin-top: 5px;
   }
-  &__media-container {
-
-  }
   &__media-body {
+    @extend .media-body;
     padding-left: 10px;
   }
   &__media-heading {
@@ -557,6 +573,8 @@ label {
     font-weight: 700;
   }
   &__name {
+    @extend .h2;
+    margin: 0;
     font-size: 16px;
     font-weight: 700;
   }
