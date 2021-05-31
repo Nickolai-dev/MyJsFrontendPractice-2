@@ -97,7 +97,15 @@
   src: url(https://fonts.gstatic.com/s/play/v12/6ae84K2oVqwItm4TCpAy2g.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+/** migrate from bootstrap4
 
+ */
+@import "./bootstrap4-migrate-files/hover";
+$modal-footer-margin-between: 10px;
+$rounded-pill:                50rem !default;
+/**
+
+ */
 $default: #ffffff;
 $primary: #337ab7;
 $secondary: #ccc;
@@ -180,13 +188,20 @@ $header-height: 50px;
 @import "node_modules/bootstrap/scss/variables";
 @import "node_modules/bootstrap/scss/root";
 @import "node_modules/bootstrap/scss/reboot";
-@import "node_modules/bootstrap/scss/mixins/breakpoints";
-@import "node_modules/bootstrap/scss/mixins/grid-framework";
-@import "node_modules/bootstrap/scss/mixins/grid";
+@import "node_modules/bootstrap/scss/utilities";
+@import "node_modules/bootstrap/scss/utilities/api";
+@import "node_modules/bootstrap/scss/helpers";
+/** migrate from bootstrap4
+//@import "node_modules/bootstrap/scss/mixins/breakpoints";
+//@import "node_modules/bootstrap/scss/mixins/grid-framework";
+//@import "node_modules/bootstrap/scss/mixins/grid";
+*/
+@import "./bootstrap4-migrate-files/borders";
+/**
 
+ */
 @import "node_modules/bootstrap/scss/grid";
 @import "node_modules/bootstrap/scss/type";
-@import "node_modules/bootstrap/scss/utilities";
 @import "node_modules/bootstrap/scss/buttons";
 .btn {
   display: flex;
@@ -226,7 +241,7 @@ $header-height: 50px;
 @import "node_modules/bootstrap/scss/button-group";
 @import "node_modules/bootstrap/scss/dropdown";
 @import "node_modules/bootstrap/scss/transitions";
-@import "node_modules/bootstrap/scss/media";
+@import "./bootstrap4-migrate-files/media";
 @import "node_modules/bootstrap/scss/modal";
 .modal-open {
   overflow: auto;
@@ -234,7 +249,7 @@ $header-height: 50px;
 @import "node_modules/bootstrap/scss/badge";
 @import "node_modules/bootstrap/scss/forms";
 @import "node_modules/bootstrap/scss/list-group";
-@import "node_modules/bootstrap/scss/input-group";
+@import "node_modules/bootstrap/scss/forms/input-group";
 
 .input-group {
   flex-wrap: nowrap;
