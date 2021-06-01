@@ -13,29 +13,18 @@ let Popper = window.Popper = require('popper.js').default;
     }
 }(function ($) {
   let popperPlacement = (function () {
-    let defaults = {},
-      poppers = $([]); // possible memory leak
-    const TRANSITION_STOP = 'transform linear 0s 0s';
+    let defaults = {
+      boundary: $('html')[0],
+    }, poppers = $([]); // possible memory leak
+    const TRANSITION_STOP = 'none';
     Popper.Defaults.onUpdate = Popper.Defaults.onCreate = function() {
       poppers.trigger('update.popperPlacementEvents');
     };
-    let checkDropdown = function(popperElem) {
-      return popperElem.css('transform') !== undefined;
-    };
-    async function wait(ms) {
-      let lock = true;
-      setTimeout(() => lock = false, ms);
-      await new Promise(resolve => {
-        while (lock) {}
-        resolve();
-      });
-    }
     return {
       init: function (options) {
         options = $.extend({}, defaults, options || {});
         $(this).each(function (i, b) {
-          let initiatorElem = $(b), dataPlacement = initiatorElem.attr('data-popper-placement'),
-              dataTransition = initiatorElem.attr('data-popper-transition'), dataOffset = initiatorElem.attr('data-popper-offset') || '0,0';
+          let initiatorElem = $(b), dataAnimation = initiatorElem.attr('data-popper-animation');
           /**
            * implemented for bootstrap4 dropdown; these dropdowns are always placed next to the initiator element
            */
@@ -46,56 +35,68 @@ let Popper = window.Popper = require('popper.js').default;
           }
           popperElem = $(popperElem[0]);
           poppers = poppers.add(popperElem);
-          async function waitForDropdown() {
-            let dropdownShown = checkDropdown(popperElem), timeoutBreaker = 0;
-            while (!dropdownShown) {
-              await wait(30);
-              timeoutBreaker+=30;
-              dropdownShown = checkDropdown(popperElem);
-              if(timeoutBreaker > 2000) {
-                break;
-              }
-            }
-          }
           let adjustDropdown = function() {
             if (popperElem.css('will-change') !== 'transform') {
               return;
             }
-            popperElem.attr('style', '');
-            let top = 0, left = 0, px = 0, py = 0, [adjustV, adjustH] = initiatorElem.attr('data-popper-placement').split('-'),
-                [ox, oy] = initiatorElem.attr('data-popper-offset').split(',').map(v=>parseInt(v));
+            popperElem.attr('style', 'visibility: hidden;')
+            let top = ()=>'0', left = ()=>'0', px = '0', py = '0', [adjustV, adjustH] = (initiatorElem.attr('data-popper-placement')).split('-'),
+                [ox, oy] = (initiatorElem.attr('data-popper-offset') || '0,0').split(',').map(v=>parseInt(v)),
+                targetTransition = 'none', leftCorrection = 0, topCorrection = 0;
             switch(adjustH) {
               case 'left':
-                left = ox + 'px';
+                left = () => (ox + leftCorrection) + 'px';
                 px = '-100%';
                 break;
               case 'center':
-                left = 'calc(50% + ' + ox + 'px)';
+                left = () => 'calc(50% + ' + (ox + leftCorrection) + 'px)';
                 px = '-50%';
                 break;
               case 'right':
-                left = 'calc(100% + ' + ox + 'px)';
+                left = () => 'calc(100% + ' + (ox + leftCorrection) + 'px)';
                 px = '0';
                 break;
             }
             switch (adjustV) {
               case 'top':
-                top = oy + 'px';
+                top = () => (oy + topCorrection) + 'px';
                 py = '-100%';
                 break;
               case 'middle':
-                top = 'calc(50% + ' + oy + 'px)';
+                top = () => 'calc(50% + ' + (oy + topCorrection) + 'px)';
                 py = '-50%';
                 break;
               case 'bottom':
-                top = 'calc(100% + ' + oy + 'px)';
+                top = () => 'calc(100% + ' + (oy + topCorrection) + 'px)';
                 py = '0';
                 break;
             }
-            popperElem.attr('style' , 'transition: ' + TRANSITION_STOP + '; position: absolute; top: ' + top
-              + '; left: ' + left + '; transform: translate3d(' + px + ', ' + py + ', 0px);');
+            let targetStyleState = (hidePopup) => 'transition: ' + targetTransition + '; position: absolute; top: ' + top()
+              + '; left: ' + left() + '; transform: translate3d(' + px + ', ' + py + ', 0px);' + (hidePopup ? ' visibility: hidden;' : '');
+            /*
+              adjust borders
+             */
+            popperElem.attr('style', targetStyleState(true));
+            let popperRect = popperElem[0].getBoundingClientRect(),
+                parentRect =  options.boundary.getBoundingClientRect(),
+                mvLeft = popperRect.right - parentRect.right,
+                mvRight = parentRect.left - popperRect.left,
+                mvBottom = parentRect.top - popperRect.top,
+                mvTop = popperRect.bottom - parentRect.bottom;
+            if(mvRight >= 0) {
+              leftCorrection = mvRight;
+            } else if (mvLeft > 0) {
+              leftCorrection = -mvLeft;
+            }
+            if (mvBottom >= 0) {
+              topCorrection = mvBottom;
+            } else if (mvTop > 0) {
+              topCorrection = -mvTop;
+            }
+            /*
+             */
+            popperElem.attr('style', targetStyleState());
           };
-          //initiatorElem.on('click', ev => waitForDropdown().then(() => adjustDropdown()));
           popperElem.on('create.popperPlacementEvents update.popperPlacementEvents', adjustDropdown);
         });
       },
