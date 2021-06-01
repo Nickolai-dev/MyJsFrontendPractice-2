@@ -1,10 +1,11 @@
 const $ = window.$ = DEV_ENV === 'production' ? require('jquery/dist/jquery.min'): require('jquery');
-require("bootstrap/js/src/util");
-require("bootstrap/js/src/dropdown");
-require("bootstrap/js/src/modal");
-require("bootstrap/js/src/button");
-require("bootstrap/js/src/tab");
-require("bootstrap/js/src/collapse");
+require('bootstrap/js/src/util');
+require('bootstrap/js/src/dropdown');
+require('bootstrap/js/src/modal');
+require('bootstrap/js/src/button');
+require('bootstrap/js/src/tab');
+require('bootstrap/js/src/collapse');
+require('./jquery.popper-placement');
 
 const appTree = window.appTree = {
   sections: [
@@ -227,6 +228,7 @@ let appHeader = $(require('../header.html')), toggleInsertHeader = function () {
   $(appRoot.header).empty().append(appHeader);
   appHeader.find('#sidebarCollapse').on('click', (ev) => $(appRoot.sidebar).parent().toggleClass('sidebar-hide'));
   $('.menu-material', appHeader).menuMaterial();
+  $('[data-toggle="dropdown"][data-popper-placement]').controlPopperPlacement();
   lazyExec(() => $('#MessageBoxDropdown', appHeader).menuMaterialFillIn({
     content: {
       type: 'message',
@@ -280,7 +282,7 @@ let appSidebar = window.appSidebar = {query: require('../components/app-sidebar.
 };
 
 let fakeDB = DEV_FAKE_SERVER ? require('./fakeDB') : undefined,
-    loadContent = DEV_FAKE_SERVER ? fakeDB.loadContent : function(url, parser=(content)=>content) {},
+    loadContent = DEV_FAKE_SERVER ? fakeDB.loadContent : function(url, parser=(content)=>content) {}, // TODO: implement server and loader
     contentCache = {}, loadContentCached = function (url, parser=(content)=>content) {
   if (contentCache[url]) {
     return parser(contentCache[url]);
@@ -323,7 +325,7 @@ let updateMainContentBinds = function () {
     () => $('.password-meter').afPasswordMeter(),
     () => $('#fileUpload, #fileUpload2').dragDropUpload(),
     () => $('#dualListBoxExample').dualListBox(),
-    () => $(),
+    () => $('[data-toggle="dropdown"][data-popper-placement]').controlPopperPlacement(),
   ]);
 }
 
