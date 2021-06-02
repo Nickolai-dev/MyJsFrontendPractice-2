@@ -229,12 +229,17 @@ let appHeader = $(require('../header.html')), toggleInsertHeader = function () {
   appHeader.find('#sidebarCollapse').on('click', (ev) => $(appRoot.sidebar).parent().toggleClass('sidebar-hide'));
   $('.menu-material', appHeader).menuMaterial();
   $('[data-toggle="dropdown"][data-popper-placement]').controlPopperPlacement();
-  lazyExec(() => $('#MessageBoxDropdown', appHeader).menuMaterialFillIn({
+  lazyExec([() => $('#MessageBoxDropdown', appHeader).menuMaterialFillIn({
     content: {
       type: 'message',
       data: () => loadContentCached('/api?database=messages', content => JSON.parse(content).query)
     }
-  }));
+  }), () => $('#NotificationsBoxDropdown', appHeader).menuMaterialFillIn({
+    content: {
+      type: 'notification',
+      data: () => loadContentCached('/api?database=notifications', content => JSON.parse(content).query)
+    }
+  })]);
 }
 let appSidebar = window.appSidebar = {query: require('../components/app-sidebar.html')}, createAppSidebar = function() {
   let query = $(appSidebar.query), block = $(query[0]), containerElem = block.find('ul'),

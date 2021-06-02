@@ -47,8 +47,12 @@
         'description': 'content'
       }));
     }, createNotificationItem = function (notificationData) {
-      let notificationItem = createMenuItem(adaptDataset(notificationData, {}));
-      notificationItem.mediaImg.after('')
+      let notificationItem = createMenuItem(adaptDataset(notificationData, {
+        'name': 'label',
+        'short_descr': 'content',
+      }));
+        notificationItem.mediaImg.after('<span class="menu-material-media__media-icon"><i class="fa ' + {'success': 'fa-check', 'cloud-disk': 'fa-cloud', 'erase': 'fa-eraser', 'stonks': 'fa-line-chart'}[notificationData.type] + '"></i></span>');
+      notificationItem.mediaIcon = notificationItem.mediaImg.next();
       notificationItem.mediaImg.remove();
       delete notificationItem.mediaImg;
       return notificationItem;
@@ -97,10 +101,18 @@
                 let messageItem = createMessageItem(messageData);
                 menuItemsToInsert = menuItemsToInsert.add(messageItem.block);
               }
-              menuContent.append(menuItemsToInsert);
+              break;
+            }
+            case 'notification':
+            case 'notifications': {
+              for (let notificationData of dataset) {
+                let notificationItem = createNotificationItem(notificationData);
+                menuItemsToInsert = menuItemsToInsert.add(notificationItem.block);
+              }
               break;
             }
           }
+          menuContent.append(menuItemsToInsert);
         });
       }
     };

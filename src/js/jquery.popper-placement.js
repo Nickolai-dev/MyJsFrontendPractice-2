@@ -16,7 +16,7 @@ let Popper = window.Popper = require('popper.js').default;
     let defaults = {
       boundary: $('html')[0],
     }, poppers = $([]); // possible memory leak
-    const TRANSITION_STOP = 'none';
+    const TRANSITION_STOP = 'none !important';
     Popper.Defaults.onUpdate = Popper.Defaults.onCreate = function() {
       poppers.trigger('update.popperPlacementEvents');
     };
@@ -39,44 +39,52 @@ let Popper = window.Popper = require('popper.js').default;
             if (popperElem.css('will-change') !== 'transform') {
               return;
             }
-            popperElem.attr('style', 'visibility: hidden;')
-            let top = ()=>'0', left = ()=>'0', px = '0', py = '0', [adjustV, adjustH] = (initiatorElem.attr('data-popper-placement')).split('-'),
+            popperElem.attr('style', 'transition: none !important');
+            let top = (noCorrection)=>'0', left = (noCorrection)=>'0', px = '0', py = '0', [adjustV, adjustH] = (initiatorElem.attr('data-popper-placement')).split('-'),
                 [ox, oy] = (initiatorElem.attr('data-popper-offset') || '0,0').split(',').map(v=>parseInt(v)),
-                targetTransition = 'none', leftCorrection = 0, topCorrection = 0;
+                targetTransition = 'all ease .2s 0s', leftCorrection = 0, topCorrection = 0;
             switch(adjustH) {
               case 'left':
-                left = () => (ox + leftCorrection) + 'px';
+                left = (noCorrection) => (ox + (noCorrection ? 0 : leftCorrection)) + 'px';
                 px = '-100%';
                 break;
               case 'center':
-                left = () => 'calc(50% + ' + (ox + leftCorrection) + 'px)';
+                left = (noCorrection) => 'calc(50% + ' + (ox + (noCorrection ? 0 : leftCorrection)) + 'px)';
                 px = '-50%';
                 break;
               case 'right':
-                left = () => 'calc(100% + ' + (ox + leftCorrection) + 'px)';
-                px = '0';
+                left = (noCorrection) => 'calc(100% + ' + (ox + (noCorrection ? 0 : leftCorrection)) + 'px)';
+                px = '0%';
                 break;
             }
             switch (adjustV) {
               case 'top':
-                top = () => (oy + topCorrection) + 'px';
+                top = (noCorrection) => (oy + (noCorrection ? 0 : topCorrection)) + 'px';
                 py = '-100%';
                 break;
               case 'middle':
-                top = () => 'calc(50% + ' + (oy + topCorrection) + 'px)';
+                top = (noCorrection) => 'calc(50% + ' + (oy + (noCorrection ? 0 : topCorrection)) + 'px)';
                 py = '-50%';
                 break;
               case 'bottom':
-                top = () => 'calc(100% + ' + (oy + topCorrection) + 'px)';
-                py = '0';
+                top = (noCorrection) => 'calc(100% + ' + (oy + (noCorrection ? 0 : topCorrection)) + 'px)';
+                py = '0%';
                 break;
             }
-            let targetStyleState = (hidePopup) => 'transition: ' + targetTransition + '; position: absolute; top: ' + top()
-              + '; left: ' + left() + '; transform: translate3d(' + px + ', ' + py + ', 0px);' + (hidePopup ? ' visibility: hidden;' : '');
+            let targetStyleState = (hidePopup, animation, stopTransition = true) => {
+              return {
+                //'transition': (stopTransition ? TRANSITION_STOP : targetTransition),
+                'position': 'absolute',
+                'top': top(animation),
+                'left': left(animation),
+                'transform': 'translate3d(calc(' + (px)
+                  + '), calc(' + (py) + '), 0px)',
+              };
+            }
             /*
               adjust borders
              */
-            popperElem.attr('style', targetStyleState(true));
+            popperElem.css(targetStyleState(false));
             let popperRect = popperElem[0].getBoundingClientRect(),
                 parentRect =  options.boundary.getBoundingClientRect(),
                 mvLeft = popperRect.right - parentRect.right,
@@ -95,7 +103,9 @@ let Popper = window.Popper = require('popper.js').default;
             }
             /*
              */
-            popperElem.attr('style', targetStyleState());
+            popperElem.attr('style', '');
+            let targetState = targetStyleState(false, false, false);
+            popperElem.css(targetState);
           };
           popperElem.on('create.popperPlacementEvents update.popperPlacementEvents', adjustDropdown);
         });
