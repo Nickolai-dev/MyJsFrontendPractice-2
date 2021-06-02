@@ -24,7 +24,9 @@ let Popper = window.Popper = require('popper.js').default;
       init: function (options) {
         options = $.extend({}, defaults, options || {});
         $(this).each(function (i, b) {
-          let initiatorElem = $(b), dataAnimation = initiatorElem.attr('data-popper-animation');
+          let initiatorElem = $(b), dataPopperOffset = (initiatorElem.attr('data-popper-offset') || '0,0'),
+              dataPopperPlacement = initiatorElem.attr('data-popper-placement').split(' '), popperPlacement = dataPopperPlacement[0],
+              popperAnchor = dataPopperPlacement.length > 1 ? dataPopperPlacement[1] : popperPlacement;
           /**
            * implemented for bootstrap4 dropdown; these dropdowns are always placed next to the initiator element
            */
@@ -39,52 +41,26 @@ let Popper = window.Popper = require('popper.js').default;
             if (popperElem.css('will-change') !== 'transform') {
               return;
             }
-            popperElem.attr('style', 'transition: none !important');
-            let top = (noCorrection)=>'0', left = (noCorrection)=>'0', px = '0', py = '0', [adjustV, adjustH] = (initiatorElem.attr('data-popper-placement')).split('-'),
-                [ox, oy] = (initiatorElem.attr('data-popper-offset') || '0,0').split(',').map(v=>parseInt(v)),
-                targetTransition = 'all ease .2s 0s', leftCorrection = 0, topCorrection = 0;
-            switch(adjustH) {
-              case 'left':
-                left = (noCorrection) => (ox + (noCorrection ? 0 : leftCorrection)) + 'px';
-                px = '-100%';
-                break;
-              case 'center':
-                left = (noCorrection) => 'calc(50% + ' + (ox + (noCorrection ? 0 : leftCorrection)) + 'px)';
-                px = '-50%';
-                break;
-              case 'right':
-                left = (noCorrection) => 'calc(100% + ' + (ox + (noCorrection ? 0 : leftCorrection)) + 'px)';
-                px = '0%';
-                break;
-            }
-            switch (adjustV) {
-              case 'top':
-                top = (noCorrection) => (oy + (noCorrection ? 0 : topCorrection)) + 'px';
-                py = '-100%';
-                break;
-              case 'middle':
-                top = (noCorrection) => 'calc(50% + ' + (oy + (noCorrection ? 0 : topCorrection)) + 'px)';
-                py = '-50%';
-                break;
-              case 'bottom':
-                top = (noCorrection) => 'calc(100% + ' + (oy + (noCorrection ? 0 : topCorrection)) + 'px)';
-                py = '0%';
-                break;
-            }
-            let targetStyleState = (hidePopup, animation, stopTransition = true) => {
+            let anchorTable = {'left': -1, 'center': -.5, 'right': 0, 'top': -1, 'middle': -.5, 'bottom': 0},
+                [adjustV, adjustH] = popperPlacement.split('-'),
+                [anchorV, anchorH] = popperAnchor.split('-'),
+                px = anchorTable[adjustH], py = anchorTable[adjustV],
+                ax = anchorTable[anchorH], ay = anchorTable[anchorV],
+                leftCorrection = 0, topCorrection = 0,
+                [ox, oy] = dataPopperOffset.split(',').map(v=>parseInt(v)),
+                top = () => 'calc(' + (100*(1.0+ay)) + '% + ' + (oy + topCorrection + popperElem.outerHeight() * py) + 'px)',
+                left = () => 'calc(' + (100*(1.0+ax)) + '% + ' + (ox + leftCorrection + popperElem.outerWidth() * px) + 'px)';
+            let targetStyleState = () => {
               return {
-                //'transition': (stopTransition ? TRANSITION_STOP : targetTransition),
                 'position': 'absolute',
-                'top': top(animation),
-                'left': left(animation),
-                'transform': 'translate3d(calc(' + (px)
-                  + '), calc(' + (py) + '), 0px)',
+                'top': top(),
+                'left': left(),
               };
             }
             /*
               adjust borders
              */
-            popperElem.css(targetStyleState(false));
+            popperElem.css(targetStyleState());
             let popperRect = popperElem[0].getBoundingClientRect(),
                 parentRect =  options.boundary.getBoundingClientRect(),
                 mvLeft = popperRect.right - parentRect.right,
@@ -104,15 +80,19 @@ let Popper = window.Popper = require('popper.js').default;
             /*
              */
             popperElem.attr('style', '');
-            let targetState = targetStyleState(false, false, false);
-            popperElem.css(targetState);
+            popperElem.css(targetStyleState());
           };
           popperElem.on('create.popperPlacementEvents update.popperPlacementEvents', adjustDropdown);
         });
-      },
+      }, reset: function () {
+        $(this).each(function (i, b) {
+          $(b).nextAll().filter('.dropdown-menu').off('create.popperPlacementEvents update.popperPlacementEvents');
+        });
+      }
     }
   }());
   $.fn.extend({
-      controlPopperPlacement: popperPlacement.init,
+    controlPopperPlacement: popperPlacement.init,
+    resetControlPopperPlacement: popperPlacement.reset,
   });
 }));

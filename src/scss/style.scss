@@ -225,6 +225,38 @@ $header-height: 50px;
 }
 @import "node_modules/bootstrap/scss/button-group";
 @import "node_modules/bootstrap/scss/dropdown";
+.dropdown-menu {
+  position: absolute !important;
+  visibility: hidden;
+  display: block;
+  &.show {
+    visibility: visible;
+  }
+}
+.dropdown-fade-slide {
+  $translate-distance: '20%';
+  opacity: 0;
+  transition-property: opacity, transform !important;
+  transition-duration: 0.3s, 0.3s !important;
+  transition-timing-function: ease-out, ease-out !important;
+  transition-delay: 0s, 0s !important;
+  &_top {
+    transform: translate(0, #{$translate-distance});
+  }
+  &_right {
+    transform: translate(-#{$translate-distance}, 0);
+  }
+  &_bottom {
+    transform: translate(0, -#{$translate-distance});
+  }
+  &_left {
+    transform: translate(#{$translate-distance}, 0);
+  }
+  &.show {
+    opacity: 1;
+    transform: translate(0,0);
+  }
+}
 @import "node_modules/bootstrap/scss/transitions";
 @import "node_modules/bootstrap/scss/media";
 @import "node_modules/bootstrap/scss/modal";

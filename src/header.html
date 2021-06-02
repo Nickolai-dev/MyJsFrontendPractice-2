@@ -20,11 +20,10 @@
             <div class="position-relative">
               <button id="messagesMenuButton" class="right-navbar__link dropdown-toggle"
                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                      data-popper-placement="bottom-center" data-popper-animation="slide-bottom fade"
-                      data-popper-offset="0,23">
+                      data-popper-placement="bottom-center" data-popper-offset="0,23">
                 <i class="fa fa-envelope-o"></i>
                 <span id="indicatorMS" class="badge badge-info show"></span></button>
-              <div class="dropdown-menu p-0 border-0" aria-labelledby="messagesMenuButton">
+              <div class="dropdown-menu dropdown-fade-slide dropdown-fade-slide_bottom p-0 border-0" aria-labelledby="messagesMenuButton">
                 <div class="menu-material" data-label="Messages" data-linkMore="#" data-labelMore="View All Messages"
                      data-id="MessageBoxDropdown" data-center="true"></div>
               </div>
@@ -33,11 +32,10 @@
           <li class="right-navbar__item">
             <div class="position-relative">
               <button id="notificationsMenuButton" class="right-navbar__link" data-toggle="dropdown" aria-haspopup="true"
-                      aria-expanded="false" data-popper-placement="bottom-center" data-popper-animation="slide-bottom fade"
-                      data-popper-offset="0,23">
+                      aria-expanded="false" data-popper-placement="bottom-center" data-popper-offset="0,23">
                 <i class="fa fa-bell-o"></i>
                 <span id="indicatorNT" class="badge badge-info show"></span></button>
-              <div class="dropdown-menu p-0 border-0" aria-labelledby="notificationsMenuButton">
+              <div class="dropdown-menu dropdown-fade-slide dropdown-fade-slide_bottom p-0 border-0" aria-labelledby="notificationsMenuButton">
                 <div class="menu-material" data-label="Notifications" data-linkMore="#" data-labelMore="View All Notifications"
                      data-id="NotificationsBoxDropdown" data-center="true"></div>
               </div>
@@ -45,35 +43,42 @@
           </li>
           <li class="right-navbar__item">
             <div class="position-relative">
-              <button id="userMenuButton" class="right-navbar__link dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-offset="-20px, 8px">
+              <button id="userMenuButton" class="right-navbar__link dropdown" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false"
+                      data-popper-placement="bottom-left bottom-right" data-popper-offset="0,0">
                 <i class="fa fa-user"></i>
                 <span class="right-navbar__user-name">Advanda Cro</span>
                 <i class="fa fa-angle-down"></i></button>
-              <div class="dropdown-menu menu-material menu-material_small py-2">
-                <a href="#" class="dropdown-item menu-material__item">
-                  <div class="menu-material__dropdown-item-icon">
-                    <i class="fa fa-home"></i></div>Register</a>
-                <a href="#" class="dropdown-item menu-material__item">
-                  <div class="menu-material__dropdown-item-icon">
-                    <i class="fa fa-user"></i></div>My Profile</a>
-                <a href="#" class="dropdown-item menu-material__item">
-                  <div class="menu-material__dropdown-item-icon">
-                    <i class="fa fa-diamond"></i></div>Lock</a>
-                <a href="#" class="dropdown-item menu-material__item">
-                  <div class="menu-material__dropdown-item-icon">
-                    <i class="fa fa-cog"></i></div>Settings</a>
-                <a href="#" class="dropdown-item menu-material__item">
-                  <div class="menu-material__dropdown-item-icon">
-                    <i class="fa fa-lock"></i></div>Log Out</a>
+              <div class="dropdown-menu dropdown-fade-slide dropdown-fade-slide_bottom p-0 border-0" aria-labelledby="userMenuButton">
+                <div class="menu-material menu-material_small">
+                  <a href="#" class="dropdown-item menu-material__item">
+                    <div class="menu-material__dropdown-item-icon">
+                      <i class="fa fa-home"></i></div>Register</a>
+                  <a href="#" class="dropdown-item menu-material__item">
+                    <div class="menu-material__dropdown-item-icon">
+                      <i class="fa fa-user"></i></div>My Profile</a>
+                  <a href="#" class="dropdown-item menu-material__item">
+                    <div class="menu-material__dropdown-item-icon">
+                      <i class="fa fa-diamond"></i></div>Lock</a>
+                  <a href="#" class="dropdown-item menu-material__item">
+                    <div class="menu-material__dropdown-item-icon">
+                      <i class="fa fa-cog"></i></div>Settings</a>
+                  <a href="#" class="dropdown-item menu-material__item">
+                    <div class="menu-material__dropdown-item-icon">
+                      <i class="fa fa-lock"></i></div>Log Out</a>
+                </div>
               </div>
             </div>
           </li>
           <li class="right-navbar__item">
             <div class="position-relative">
-              <button id="tabmenuMenuButton" class="right-navbar__link dropdown adjust-attached-modal" data-toggle="dropdown">
+              <button id="tabmenuMenuButton" class="right-navbar__link dropdown adjust-attached-modal" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false"
+                      data-popper-placement="bottom-left bottom-right" data-popper-offset="50,8">
                 <i class="fa fa-tasks"></i></button>
-              <div class="dropdown-menu">
-
+              <div class="dropdown-menu dropdown-fade-slide dropdown-fade-slide_bottom p-0 border-0" aria-labelledby="tabmenuMenuButton">
+                <div class="menu-material menu-material_large" data-label="Notifications" data-linkMore="#" data-labelMore="View All Notifications"
+                     data-id="NotificationsBoxDropdown" data-center="true"></div>
               </div>
             </div>
           </li>
