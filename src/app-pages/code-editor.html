@@ -1,0 +1,34 @@
+<div class="container-fluid">
+  <div class="row py-3_4">
+  <div class="col-lg-6">
+    <div class="sheet h-100">
+      <form action="#" class="">
+        <textarea name="codeMirror1" id="codeDark">() => {
+  let code = $('#codeDark, #codeLight', mainContent);
+  code.each(function (i, b) {
+    CodeMirror.fromTextArea(b, $.extend({}, {
+      lineNumbers: true,
+      matchBrackets: true,
+      styleActiveLine: true,
+      mode: 'javascript'
+    }, ($(b).is('#codeDark') ? {theme: 'ambiance'} : {})));
+  });
+}</textarea>
+        <button type="submit" class="d-none">Submit</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="sheet h-100">
+      <textarea name="codeMirror2" id="codeLight">$(function () {
+  $('.no-js').hide();
+  asyncGoToPage();
+  toggleInsertHeader();
+  toggleInsertSidebar();
+  importRequiredStyles();
+});</textarea>
+      <button type="submit" class="d-none">Submit</button>
+    </div>
+  </div>
+  </div>
+</div>

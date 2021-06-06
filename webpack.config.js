@@ -44,6 +44,9 @@ module.exports = (env) => {
         }, {
           from: path.resolve(__dirname, 'src/img/contact/'),
           to: path.resolve(dist_path, 'img/contact/')
+        }, {
+          from: path.resolve(__dirname, 'node_modules/tinymce/'),
+          to: path.resolve(dist_path, 'tinymce/')
         }]
       }),
     ],
@@ -132,7 +135,8 @@ module.exports = (env) => {
       }, {
         test: /\.css$/,
         include: [
-          path.resolve(__dirname, 'node_modules/malihu-custom-scrollbar-plugin')
+          path.resolve(__dirname, 'node_modules/malihu-custom-scrollbar-plugin/'),
+          path.resolve(__dirname, 'node_modules/codemirror/'),
         ], use: [
           {
             loader: 'css-loader',

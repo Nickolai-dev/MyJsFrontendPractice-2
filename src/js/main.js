@@ -5,6 +5,11 @@ require('bootstrap/js/src/modal');
 require('bootstrap/js/src/button');
 require('bootstrap/js/src/tab');
 require('bootstrap/js/src/collapse');
+
+require('tinymce/tinymce.min');
+const CodeMirror = window.CodeMirror = require('codemirror/lib/codemirror');
+require('codemirror/mode/javascript/javascript');
+
 require('./jquery.popper-placement');
 
 const appTree = window.appTree = {
@@ -17,17 +22,19 @@ const appTree = window.appTree = {
         html: require('src/app-pages/dashboard-1.html'),
         title: 'Dashboard v.1',
         icon: 'fa-bullseye'
-      }, {
-        pathName: 'dashboard2',
-        html: require('src/app-pages/dashboard-2.html'),
-        title: 'Dashboard v.2',
-        icon: 'fa-circle-o'
-      }, {
-        pathName: 'dashboard3',
-        html: require('src/app-pages/dashboard-3.html'),
-        title: 'Dashboard v.3',
-        icon: 'fa-cube'
-      }]
+      }
+      // , {
+      //   pathName: 'dashboard2',
+      //   html: require('src/app-pages/dashboard-2.html'),
+      //   title: 'Dashboard v.2',
+      //   icon: 'fa-circle-o'
+      // }, {
+      //   pathName: 'dashboard3',
+      //   html: require('src/app-pages/dashboard-3.html'),
+      //   title: 'Dashboard v.3',
+      //   icon: 'fa-cube'
+      // }
+      ]
     }, {
       title: 'Mailbox',
       icon: 'fa-envelope',
@@ -46,6 +53,15 @@ const appTree = window.appTree = {
         pathName: 'compose-mail',
         icon: 'fa-paper-plane',
         html: require('src/app-pages/compose-mail.html')
+      }]
+    }, {
+      title: 'Interface',
+      icon: 'fa-flask',
+      contents: [{
+        title: 'Code Editor',
+        icon: 'fa-code',
+        pathName: 'code-editor',
+        html: require('src/app-pages/code-editor.html'),
       }]
     }, {
       title: 'Forms Elements',
@@ -127,7 +143,7 @@ let safeExec = function(callbacks) {
       console.log(e);
     }
   }
-}, lazyExec = function(callbacks) {
+}, lazyExec = window.lazyExec = function(callbacks) {
   /**
    * @param callbacks: [{callback: ()=>any, then: [()=>any, ...]},
    *            **OR** callback: ()=>any, ...] OR ()=>any
@@ -194,7 +210,8 @@ require('./jquery.dual-list-box');
 require('malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min');
 
 $.fn.extend({
-  mScrollbar: function () {
+  mScrollbar: function (options) {
+    options = $.extend({}, {outside: false}, options || {});
     $(this).each(function (i, b) {
       /**
        * block`s parent position css prop must be relative
@@ -211,7 +228,7 @@ $.fn.extend({
       let mcsbScrollbar = wrapper.children('.mCSB_scrollTools'),
           draggerContainer = mcsbScrollbar.find('.mCSB_draggerContainer'),
           draggerRail = draggerContainer.find('.mCSB_draggerRail');
-      mcsbScrollbar.css('right', '0');
+      mcsbScrollbar.css({'right': '0', transform: 'translateX(' + (options.outside ? '100%' : '0') + ')'});
       draggerContainer.append(draggerRail);
       draggerContainer.css({
         // 'height': 'calc(100% - 5px)',
@@ -231,13 +248,41 @@ let appHeader = $(require('../header.html')), toggleInsertHeader = function () {
   $('[data-toggle="dropdown"][data-popper-placement]').controlPopperPlacement();
   lazyExec([() => $('#MessageBoxDropdown', appHeader).menuMaterialFillIn({
     content: {
-      type: 'message',
+      type: 'messages',
       data: () => loadContentCached('/api?database=messages', content => JSON.parse(content).query)
     }
   }), () => $('#NotificationsBoxDropdown', appHeader).menuMaterialFillIn({
     content: {
-      type: 'notification',
+      type: 'notifications',
       data: () => loadContentCached('/api?database=notifications', content => JSON.parse(content).query)
+    }
+  }), () => $('#otherMenu', appHeader).menuMaterialFillIn({
+    content: {
+      type: 'tabs',
+      data: {
+        query: [{
+          label: 'News',
+          tabPaneId: 'newsTab',
+          content: {
+            type: 'news',
+            data: () => loadContentCached('/api?database=news', content => JSON.parse(content).query),
+          }
+        }, {
+          label: 'Activity',
+          tabPaneId: 'recentActivityTab',
+          content: {
+            type: 'activities',
+            data: () => loadContentCached('/api?database=recent-activity', content => JSON.parse(content).query),
+          }
+        }, {
+          label: 'Settings',
+          tabPaneId: 'settingsTab',
+          content: {
+            type: 'settings',
+            data: () => loadContentCached('/api?database=user-settings', content => JSON.parse(content).query)
+          }
+        }]
+      }
     }
   })]);
 }
@@ -299,6 +344,8 @@ let fakeDB = DEV_FAKE_SERVER ? require('./fakeDB') : undefined,
 
 let stylesRequire = [
   require('malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css'),
+  require('codemirror/lib/codemirror.css'),
+  require('codemirror/theme/ambiance.css')
 ], importRequiredStyles = function() {
   if(document.getElementById('stylesRequire')) {
     return;
@@ -322,15 +369,27 @@ let updateMainContentBinds = function () {
     () => $('.af-ion-rangeslider', mainContent).afIonRangeSlider(),
     () => $('.af-jquery-select', mainContent).jquerySelect({
       optionsContentLoader: (url) => loadContentCached(url, (content) => JSON.parse(content).query)}),
-    () => $('input[data-inputMask]').afInputMask(),
-    () => $('input.af-stripped-slider').strippedSlider(),
-    () => $('.af-date-picker').afDatePicker(),
-    () => $('.af-color-picker').afColorPicker(),
-    () => $('.af-touch-spin').afTouchSpin(),
-    () => $('.password-meter').afPasswordMeter(),
-    () => $('#fileUpload, #fileUpload2').dragDropUpload(),
-    () => $('#dualListBoxExample').dualListBox(),
-    () => $('[data-toggle="dropdown"][data-popper-placement]').controlPopperPlacement(),
+    () => $('input[data-inputMask]', mainContent).afInputMask(),
+    () => $('input.af-stripped-slider', mainContent).strippedSlider(),
+    () => $('.af-date-picker', mainContent).afDatePicker(),
+    () => $('.af-color-picker', mainContent).afColorPicker(),
+    () => $('.af-touch-spin', mainContent).afTouchSpin(),
+    () => $('.password-meter', mainContent).afPasswordMeter(),
+    () => $('#fileUpload, #fileUpload2', mainContent).dragDropUpload(),
+    () => $('#dualListBoxExample', mainContent).dualListBox(),
+    () => $('[data-toggle="dropdown"][data-popper-placement]', mainContent).controlPopperPlacement(),
+    () => tinymce.init({selector: '#tinymce', base_url: '/tinymce'}),
+    () => {
+      let code = $('#codeDark, #codeLight', mainContent);
+      code.each(function (i, b) {
+        CodeMirror.fromTextArea(b, $.extend({}, {
+          lineNumbers: true,
+          matchBrackets: true,
+          styleActiveLine: true,
+          mode: 'javascript'
+        }, ($(b).is('#codeDark') ? {theme: 'ambiance'} : {})));
+      });
+    }
   ]);
 }
 

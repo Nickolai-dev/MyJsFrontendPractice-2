@@ -314,9 +314,6 @@ $fa-font-path: '~font-awesome/fonts';
 @import "./jquery-simple-multiselect-plugin";
 @import "./drag-drop-upload";
 @import "./dual-list-box";
-//@import "tinymce/skins/content/default/content.min.css";
-//@import "tinymce/skins/ui/oxide/content.min.css";
-//@import "tinymce/skins/ui/oxide-dark/content.min.css";
 //@import "codemirror/lib/codemirror.css";
 //@import "codemirror/theme/ambiance.css";
 
@@ -760,7 +757,7 @@ label {
     }
   }
   &-content {
-    padding-top: 20px;
+    padding-top: 8px;
     &__heading {
       color: $default;
       font-size: 20px;
@@ -947,6 +944,7 @@ label {
   &__icon {
     color: #fff;
     font-size: 22px;
+    margin: 10px;
   }
   &__text {
     color: #fff;
@@ -954,7 +952,7 @@ label {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0 15px;
+    width: 100%;
     font-size: 15px;
   }
   &_facebook {
@@ -997,8 +995,35 @@ label {
       background-color: #c03121;
     }
   }
-  &_sm {
-
+  &_github {
+    $bg: #24292e;
+    background-color: $bg;
+    &:hover {
+      background-color: mix($bg, #000, 55%);
+    }
+    #{$root}__iwrap {
+      background-color: #606870;//mix($bg, #fff, 25%);
+    }
+  }
+  &_whatsapp {
+    $bg: #189a0e;
+    background-color: $bg;
+    &:hover {
+      background-color: mix($bg, #000, 55%);
+    }
+    #{$root}__iwrap {
+      background-color: #529d4c;
+    }
+  }
+  &_gmail {
+    background-color: #fff;
+    color: #009ad5;
+    &:hover {
+      background-color: #eee;
+    }
+    #{$root}__iwrap {
+      background-image: url('https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_default_1x_r2.png');
+    }
   }
 }
 .content-main {

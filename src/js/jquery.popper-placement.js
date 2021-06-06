@@ -16,7 +16,6 @@ let Popper = window.Popper = require('popper.js').default;
     let defaults = {
       boundary: $('html')[0],
     }, poppers = $([]); // possible memory leak
-    const TRANSITION_STOP = 'none !important';
     Popper.Defaults.onUpdate = Popper.Defaults.onCreate = function() {
       poppers.trigger('update.popperPlacementEvents');
     };
@@ -27,39 +26,23 @@ let Popper = window.Popper = require('popper.js').default;
           let initiatorElem = $(b), dataPopperOffset = (initiatorElem.attr('data-popper-offset') || '0,0'),
               dataPopperPlacement = initiatorElem.attr('data-popper-placement').split(' '), popperPlacement = dataPopperPlacement[0],
               popperAnchor = dataPopperPlacement.length > 1 ? dataPopperPlacement[1] : popperPlacement;
-          /**
-           * implemented for bootstrap4 dropdown; these dropdowns are always placed next to the initiator element
-           */
           let popperElem = initiatorElem.nextAll().filter('.dropdown-menu');
-          if (!popperElem.length) {
-            console.error('no dropdown found');
-            return;
-          }
           popperElem = $(popperElem[0]);
           poppers = poppers.add(popperElem);
+          let anchorTable = {'left': -1, 'center': -.5, 'right': 0, 'top': -1, 'middle': -.5, 'bottom': 0},
+              [adjustV, adjustH] = popperPlacement.split('-'),
+              [anchorV, anchorH] = popperAnchor.split('-'),
+              px = anchorTable[adjustH], py = anchorTable[adjustV],
+              ax = anchorTable[anchorH], ay = anchorTable[anchorV],
+              leftCorrection = 0, topCorrection = 0,
+              [ox, oy] = dataPopperOffset.split(',').map(v=>parseInt(v)),
+              top = () => 'calc(' + (100*(1.0+ay)) + '% + ' + (oy + topCorrection + popperElem.outerHeight() * py) + 'px)',
+              left = () => 'calc(' + (100*(1.0+ax)) + '% + ' + (ox + leftCorrection + popperElem.outerWidth() * px) + 'px)',
+              targetStyleState = () => {return {'position': 'absolute', 'top': top(), 'left': left()}};
           let adjustDropdown = function() {
             if (popperElem.css('will-change') !== 'transform') {
               return;
             }
-            let anchorTable = {'left': -1, 'center': -.5, 'right': 0, 'top': -1, 'middle': -.5, 'bottom': 0},
-                [adjustV, adjustH] = popperPlacement.split('-'),
-                [anchorV, anchorH] = popperAnchor.split('-'),
-                px = anchorTable[adjustH], py = anchorTable[adjustV],
-                ax = anchorTable[anchorH], ay = anchorTable[anchorV],
-                leftCorrection = 0, topCorrection = 0,
-                [ox, oy] = dataPopperOffset.split(',').map(v=>parseInt(v)),
-                top = () => 'calc(' + (100*(1.0+ay)) + '% + ' + (oy + topCorrection + popperElem.outerHeight() * py) + 'px)',
-                left = () => 'calc(' + (100*(1.0+ax)) + '% + ' + (ox + leftCorrection + popperElem.outerWidth() * px) + 'px)';
-            let targetStyleState = () => {
-              return {
-                'position': 'absolute',
-                'top': top(),
-                'left': left(),
-              };
-            }
-            /*
-              adjust borders
-             */
             popperElem.css(targetStyleState());
             let popperRect = popperElem[0].getBoundingClientRect(),
                 parentRect =  options.boundary.getBoundingClientRect(),
@@ -77,8 +60,6 @@ let Popper = window.Popper = require('popper.js').default;
             } else if (mvTop > 0) {
               topCorrection = -mvTop;
             }
-            /*
-             */
             popperElem.attr('style', '');
             popperElem.css(targetStyleState());
           };

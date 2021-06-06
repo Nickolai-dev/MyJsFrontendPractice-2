@@ -57,6 +57,24 @@
         classPrefix: 'google-plus',
         faIcon: 'fa-google-plus',
         href: 'https://www.google.plus.com',
+      }, {
+        test: /github/i,
+        title: 'Github',
+        classPrefix: 'github',
+        faIcon: 'fa-github',
+        href: 'https://github.com'
+      }, {
+        test: /whatsapp/i,
+        title: 'WhatsApp',
+        classPrefix: 'whatsapp',
+        faIcon: 'fa-whatsapp',
+        href: 'https://whatsapp.web.com'
+      }, {
+        test: /gmail/i,
+        title: 'Gmail',
+        classPrefix: 'gmail',
+        faIcon: '',
+        href: 'https://google.mail.com'
       }],
       elements: {
         raw: '<span class="social__iwrap"><i class="social__icon fa"></i></span><span class="social__text"></span>'
@@ -86,7 +104,7 @@
           this_.append(elems);
           elems.find('i').addClass(thisSocial.faIcon);
           elems.filter('.social__text').text(thisSocial.title);
-          if(this_.is('a')) {
+          if(this_.is('a') && this_.attr('href').length < 5) {
             this_.attr('href', thisSocial.href);
           }
         }

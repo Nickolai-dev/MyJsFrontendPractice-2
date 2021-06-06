@@ -43,6 +43,80 @@ module.exports = {
           })
         }
       }
+    }, {
+      databaseName: 'news',
+      content: {
+        mime: 'application/json',
+        data: () => {
+          return JSON.stringify({
+            query: [{
+              photo: 'img/contact/1.jpg', content: 'The point of using Lorem Ipsum is that it has a more-or-less normal.', date: 'Yesterday 2:45 pm'
+            }, {
+              photo: 'img/contact/2.jpg', content: 'The point of using Lorem Ipsum is that it has a more-or-less normal.', date: 'Yesterday 2:45 pm'
+            }, {
+              photo: 'img/contact/3.jpg', content: 'The point of using Lorem Ipsum is that it has a more-or-less normal.', date: 'Yesterday 2:45 pm'
+            }, {
+              photo: 'img/contact/4.jpg', content: 'The point of using Lorem Ipsum is that it has a more-or-less normal.', date: 'Yesterday 2:45 pm'
+            }, {
+              photo: 'img/contact/1.jpg', content: 'The point of using Lorem Ipsum is that it has a more-or-less normal.', date: 'Yesterday 2:45 pm'
+            }, {
+              photo: 'img/contact/2.jpg', content: 'The point of using Lorem Ipsum is that it has a more-or-less normal.', date: 'Yesterday 2:45 pm'
+            }, {
+              photo: 'img/contact/3.jpg', content: 'The point of using Lorem Ipsum is that it has a more-or-less normal.', date: 'Yesterday 2:45 pm'
+            }, {
+              photo: 'img/contact/4.jpg', content: 'The point of using Lorem Ipsum is that it has a more-or-less normal.', date: 'Yesterday 2:45 pm'
+            }]
+          })
+        }
+      }
+    }, {
+      databaseName: 'recent-activity',
+      content: {
+        mime: 'application/json',
+        data: () => {
+          return JSON.stringify({
+            query: [{
+              action: 'New user registered', date: '1 hours ago', info: 'The point of using Lorem Ipsum is that it has a more-or-less normal.'
+            }, {
+              action: 'New user registered', date: '2 hours ago', info: 'The point of using Lorem Ipsum is that it has a more-or-less normal.'
+            }, {
+              action: 'New user registered', date: '3 hours ago', info: 'The point of using Lorem Ipsum is that it has a more-or-less normal.'
+            }, {
+              action: 'New user registered', date: '4 hours ago', info: 'The point of using Lorem Ipsum is that it has a more-or-less normal.'
+            }, {
+              action: 'New user registered', date: '5 hours ago', info: 'The point of using Lorem Ipsum is that it has a more-or-less normal.'
+            }, {
+              action: 'New user registered', date: '6 hours ago', info: 'The point of using Lorem Ipsum is that it has a more-or-less normal.'
+            }, {
+              action: 'New user registered', date: '9 hours ago', info: 'The point of using Lorem Ipsum is that it has a more-or-less normal.'
+            }]
+          })
+        }
+      }
+    }, {
+      databaseName: 'user-settings',
+      content: {
+        mime: 'application/json',
+        data: () => {
+          return JSON.stringify({
+            query: [{
+              set: 'Show notifications', val: false
+            }, {
+              set: 'Disable chat', val: false,
+            }, {
+              set: 'Enable history', val: false,
+            }, {
+              set: 'Show charts', val: false,
+            }, {
+              set: 'Update everyday', val: true,
+            }, {
+              set: 'Global search', val: true,
+            }, {
+              set: 'Offline users', val: true,
+            }]
+          })
+        }
+      }
     }]
   }],
   loadContent: function(path, parser=(content)=>content) {
